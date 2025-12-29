@@ -1,0 +1,1063 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STEAM × Desmos — Математика как исследование</title>
+    <meta name="description" content="STEAM и Desmos: визуализация, исследование, творчество. Галерея работ учеников (Desmos)." />
+    <style>
+        :root{
+            --bg: #fbf7ef;
+            --paper: #ffffff;
+            --ink: #0f2a3d;
+            --muted: #5b6b77;
+            --line: rgba(15,42,61,.12);
+            --accent: #caa24b;
+            --accent2:#2b74b6;
+            --shadow: 0 14px 40px rgba(15,42,61,.10);
+            --radius: 18px;
+            --radius2: 26px;
+            --max: 1100px;
+        }
+        *{ box-sizing: border-box; }
+        html{ scroll-behavior:smooth; }
+        body{
+            margin:0;
+            font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+            color: var(--ink);
+            background: radial-gradient(1200px 700px at 20% -10%, rgba(43,116,182,.10), transparent 60%),
+            radial-gradient(900px 600px at 90% 20%, rgba(202,162,75,.12), transparent 55%),
+            var(--bg);
+        }
+        a{ color:inherit; text-decoration:none; }
+        .container{ max-width: var(--max); margin:0 auto; padding: 0 18px; }
+
+        header{
+            position: sticky; top:0; z-index: 50;
+            backdrop-filter: blur(10px);
+            background: rgba(251,247,239,.82);
+            border-bottom: 1px solid var(--line);
+        }
+        .nav{
+            display:flex; align-items:center; justify-content:space-between;
+            padding: 12px 0;
+            gap: 14px;
+        }
+        .brand{
+            display:flex; align-items:center; gap:12px;
+            min-width: 240px;
+        }
+        .mark{
+            width: 38px; height: 38px; border-radius: 14px;
+            background: linear-gradient(145deg, rgba(43,116,182,.20), rgba(202,162,75,.22));
+            border: 1px solid rgba(15,42,61,.10);
+            display:grid; place-items:center;
+            box-shadow: 0 10px 22px rgba(15,42,61,.10);
+        }
+        .mark svg{ width: 22px; height: 22px; }
+        .brand h1{ font-size: 14px; margin:0; letter-spacing:.2px; }
+        .brand small{ display:block; color: var(--muted); margin-top:2px; font-size: 12px; }
+
+        nav ul{
+            list-style:none; display:flex; gap: 16px; margin:0; padding:0;
+            align-items:center;
+        }
+        nav a{
+            font-size: 13px;
+            color: rgba(15,42,61,.86);
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid transparent;
+        }
+        nav a:hover{
+            background: rgba(43,116,182,.08);
+            border-color: rgba(43,116,182,.14);
+        }
+        .nav-actions{ display:flex; gap:10px; align-items:center; }
+        .btn{
+            display:inline-flex; align-items:center; justify-content:center;
+            gap: 8px;
+            padding: 9px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(15,42,61,.14);
+            background: rgba(255,255,255,.72);
+            box-shadow: 0 10px 26px rgba(15,42,61,.08);
+            font-size: 13px;
+            cursor:pointer;
+            user-select:none;
+        }
+        .btn:hover{ transform: translateY(-1px); }
+        .btn:active{ transform: translateY(0); }
+        .btn.primary{
+            background: linear-gradient(145deg, rgba(43,116,182,.15), rgba(202,162,75,.16));
+            border-color: rgba(15,42,61,.12);
+        }
+        .burger{ display:none; }
+
+        .mobile{ display:none; padding: 10px 0 14px; }
+        .mobile.open{ display:block; }
+        .mobile a{
+            display:block; padding: 10px 10px; border-radius: 14px;
+            border:1px solid rgba(15,42,61,.10); background: rgba(255,255,255,.65);
+            margin-top: 8px;
+        }
+
+        /* Layout */
+        section{ padding: 18px 0; }
+        .section-head{
+            display:flex; align-items:flex-end; justify-content:space-between;
+            gap: 14px;
+            margin: 16px 0 12px;
+        }
+        .section-head h2{
+            margin:0;
+            font-size: 22px;
+            letter-spacing: -0.2px;
+        }
+        .section-head p{
+            margin:0;
+            color: var(--muted);
+            font-size: 13px;
+            max-width: 68ch;
+            line-height: 1.45;
+        }
+
+        .card{
+            background: rgba(255,255,255,.78);
+            border: 1px solid rgba(15,42,61,.12);
+            border-radius: var(--radius2);
+            box-shadow: var(--shadow);
+        }
+
+        /* Block 1: Info */
+        .hero{ padding: 34px 0 10px; }
+        .hero-grid{
+            display:grid; gap: 18px;
+            grid-template-columns: 1.15fr .85fr;
+            align-items: stretch;
+        }
+        .hero-left{ padding: 24px 24px 22px; position:relative; overflow:hidden; }
+        .hero-left:before{
+            content:"";
+            position:absolute; inset:-2px;
+            background:
+                    radial-gradient(600px 260px at 20% 15%, rgba(43,116,182,.14), transparent 60%),
+                    radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.16), transparent 55%);
+            pointer-events:none;
+        }
+        .hero-left > *{ position:relative; }
+        .kicker{
+            display:inline-flex; gap: 10px; align-items:center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(251,247,239,.92);
+            font-size: 12px;
+            color: rgba(15,42,61,.85);
+        }
+        .dot{
+            width: 8px; height:8px; border-radius: 50%;
+            background: var(--accent2);
+            box-shadow: 0 0 0 4px rgba(43,116,182,.12);
+        }
+        .hero h2{
+            margin: 14px 0 10px;
+            font-size: 34px;
+            line-height: 1.06;
+            letter-spacing: -0.6px;
+        }
+        .hero p{
+            margin: 0 0 16px;
+            color: var(--muted);
+            font-size: 15px;
+            line-height: 1.55;
+            max-width: 60ch;
+        }
+        .hero-tags{
+            display:flex; flex-wrap:wrap; gap:10px;
+            margin-top: 14px;
+        }
+        .tag{
+            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.75);
+            color: rgba(15,42,61,.82);
+        }
+        .tag strong{ color: var(--ink); }
+
+        .hero-right{
+            padding: 18px;
+            display:flex;
+            flex-direction:column;
+            gap: 12px;
+        }
+        .mini{
+            padding: 14px;
+            border-radius: var(--radius);
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.72);
+        }
+        .mini h3{ margin:0 0 8px; font-size: 13px; letter-spacing:.2px; }
+        .mini p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+        .mini strong{ color: var(--ink); }
+
+        .hero-illustration{
+            border-radius: var(--radius);
+            border: 1px solid rgba(15,42,61,.12);
+            background: radial-gradient(600px 260px at 20% 20%, rgba(43,116,182,.10), transparent 60%),
+            radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.12), transparent 55%),
+            rgba(255,255,255,.70);
+            overflow:hidden;
+            min-height: 168px;
+            display:grid;
+            place-items:center;
+        }
+        .hero-illustration svg{ width: 100%; height: 180px; display:block; }
+
+        /* Block 2: Materials */
+        .grid-3{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        .grid-2{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+        .box{ padding: 16px; border-radius: var(--radius); }
+        .box h3{ margin:0 0 8px; font-size: 15px; }
+        .box p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .icon{
+            width: 40px; height: 40px; border-radius: 16px;
+            background: linear-gradient(145deg, rgba(43,116,182,.14), rgba(202,162,75,.16));
+            border: 1px solid rgba(15,42,61,.12);
+            display:grid; place-items:center;
+            margin-bottom: 10px;
+        }
+        .icon svg{ width: 20px; height: 20px; }
+
+        .material{
+            padding: 16px;
+            border-radius: var(--radius2);
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.78);
+            box-shadow: 0 12px 34px rgba(15,42,61,.10);
+            overflow:hidden;
+            position:relative;
+        }
+        .material:before{
+            content:"";
+            position:absolute; inset:auto -30px -30px auto;
+            width: 160px; height: 160px;
+            background: radial-gradient(circle at 30% 30%, rgba(202,162,75,.25), transparent 60%);
+            transform: rotate(22deg);
+            pointer-events:none;
+        }
+        .material > *{ position:relative; }
+        .material .top{
+            display:flex;
+            justify-content:space-between;
+            gap: 12px;
+            align-items:flex-start;
+        }
+        .material .label{
+            display:inline-block;
+            font-size: 12px;
+            color: rgba(15,42,61,.80);
+            padding: 4px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(251,247,239,.85);
+        }
+        .material h3{ margin: 10px 0 8px; font-size: 15px; }
+        .material ul{ margin:0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .material li{ margin: 6px 0; }
+        .material .art{
+            margin-top: 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(15,42,61,.12);
+            overflow:hidden;
+            background: rgba(251,247,239,.75);
+        }
+        .material .art svg{ width: 100%; height: 120px; display:block; }
+
+        /* Block 3: Gallery (Desmos) */
+        .gallery{ padding: 16px; }
+
+        .toolbar{
+            display:flex; flex-wrap:wrap; gap: 10px;
+            align-items:center;
+            justify-content:space-between;
+            margin: 10px 0 14px;
+        }
+        .filters{
+            display:flex; flex-wrap:wrap; gap: 10px; align-items:center;
+        }
+        .input{
+            display:flex; align-items:center; gap: 10px;
+            padding: 10px 12px;
+            border-radius: 14px;
+            border: 1px solid rgba(15,42,61,.14);
+            background: rgba(255,255,255,.78);
+            min-width: 260px;
+        }
+        .input input{
+            border:none; outline:none; background: transparent;
+            width: 100%;
+            font-size: 13px;
+        }
+        select{
+            border: 1px solid rgba(15,42,61,.14);
+            background: rgba(255,255,255,.78);
+            padding: 10px 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            outline:none;
+        }
+
+        .work-grid{
+            display:grid; gap: 14px;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .work{
+            border-radius: var(--radius2);
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.78);
+            overflow:hidden;
+            box-shadow: 0 12px 34px rgba(15,42,61,.10);
+            display:flex;
+            flex-direction:column;
+            min-height: 380px;
+        }
+        .work-head{
+            padding: 14px 14px 10px;
+            display:flex; justify-content:space-between; gap: 12px;
+            align-items:flex-start;
+        }
+        .work h3{
+            margin:0;
+            font-size: 14px;
+            letter-spacing:.1px;
+        }
+        .meta{
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+            display:flex; flex-wrap:wrap; gap: 8px;
+        }
+        .pill{
+            display:inline-flex; align-items:center; gap: 6px;
+            padding: 5px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(251,247,239,.75);
+            color: rgba(15,42,61,.80);
+        }
+        .work-actions{ display:flex; gap: 8px; flex-wrap:wrap; justify-content:flex-end; }
+        .work-body{
+            padding: 0 14px 14px;
+            display:flex; flex-direction:column; gap: 10px;
+            flex: 1;
+        }
+        .frame{
+            border-radius: 16px;
+            border: 1px solid rgba(15,42,61,.12);
+            overflow:hidden;
+            background: radial-gradient(600px 260px at 20% 20%, rgba(43,116,182,.10), transparent 60%),
+            radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.12), transparent 55%),
+            rgba(255,255,255,.70);
+            min-height: 260px;
+        }
+        iframe{
+            width: 100%;
+            height: 260px;
+            border: 0;
+            display:block;
+            background: white;
+        }
+        .desc{
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.55;
+            min-height: 42px;
+        }
+
+        /* Block 4: Contact */
+        footer{ padding: 22px 0 34px; }
+        .contact{
+            padding: 16px;
+            display:grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 14px;
+            align-items: stretch;
+        }
+        .contact .left, .contact .right{
+            padding: 16px;
+            border-radius: var(--radius2);
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.78);
+        }
+        .contact h3{ margin:0 0 10px; font-size: 16px; }
+        .contact p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+        .list{ margin-top: 12px; display:grid; gap: 10px; }
+        .item{
+            display:flex; gap: 10px; align-items:flex-start;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(251,247,239,.72);
+        }
+        .item b{ display:block; font-size: 13px; margin-bottom: 2px; }
+        .item span{ color: var(--muted); font-size: 12px; }
+        .footnote{
+            margin-top: 12px;
+            color: rgba(15,42,61,.62);
+            font-size: 12px;
+        }
+
+        /* Floating */
+        .to-top{
+            position: fixed;
+            right: 16px;
+            bottom: 16px;
+            opacity: 0;
+            pointer-events:none;
+            transform: translateY(8px);
+            transition: all .2s ease;
+            z-index: 60;
+        }
+        .to-top.show{
+            opacity: 1;
+            pointer-events:auto;
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 980px){
+            .hero-grid{ grid-template-columns: 1fr; }
+            .grid-3{ grid-template-columns: 1fr; }
+            .grid-2{ grid-template-columns: 1fr; }
+            .work-grid{ grid-template-columns: 1fr; }
+            .contact{ grid-template-columns: 1fr; }
+            .brand{ min-width: auto; }
+            nav ul{ display:none; }
+            .burger{ display:inline-flex; }
+            .mobile{ display:none; }
+        }
+    </style>
+</head>
+
+<body>
+<div id="top"></div>
+
+<header>
+    <div class="container">
+        <div class="nav">
+            <div class="brand">
+                <div class="mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 16c2.8-7.5 11.2-7.5 14 0" stroke="rgba(15,42,61,.9)" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M7 8c2.2 2.8 7.8 2.8 10 0" stroke="rgba(15,42,61,.75)" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M12 4v16" stroke="rgba(202,162,75,.85)" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1>STEAM × Desmos</h1>
+                    <small>Математика как исследование и творчество</small>
+                </div>
+            </div>
+
+            <nav aria-label="Основная навигация">
+                <ul>
+                    <li><a href="#info">Информация</a></li>
+                    <li><a href="#materials">Учебные материалы</a></li>
+                    <li><a href="#works">Галерея Desmos</a></li>
+                    <li><a href="#contact">Контакты</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="btn burger" id="burger" aria-label="Открыть меню">
+                    <span>Меню</span>
+                </button>
+                <a class="btn primary" href="#works" title="Перейти к галерее">
+                    <span>Смотреть работы</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="mobile" id="mobileNav" aria-label="Мобильная навигация">
+            <a href="#info">Информация</a>
+            <a href="#materials">Учебные материалы</a>
+            <a href="#works">Галерея Desmos</a>
+            <a href="#contact">Контакты</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- 1) INFO -->
+    <section class="hero" id="info">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="card hero-left">
+                    <div class="kicker"><span class="dot"></span> STEAM-подход и Desmos для 7–12 классов</div>
+                    <h2>Математика становится понятной, когда её можно увидеть и исследовать</h2>
+                    <p>
+                        Визуальные эксперименты в Desmos переводят формулы в смысл: ученик управляет параметрами,
+                        наблюдает закономерности и превращает результаты в аккуратные графические проекты.
+                    </p>
+
+                    <div class="hero-tags" aria-label="Ключевые акценты">
+                        <div class="tag"><strong>Визуализация</strong> вместо заучивания</div>
+                        <div class="tag"><strong>Исследование</strong> через параметры</div>
+                        <div class="tag"><strong>Творчество</strong> как индикатор понимания</div>
+                        <div class="tag"><strong>Проектность</strong> и защита результата</div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
+                        <a class="btn" href="#materials">Перейти к материалам</a>
+                        <a class="btn" href="#works">Открыть галерею</a>
+                    </div>
+                </div>
+
+                <div class="card hero-right">
+                    <div class="hero-illustration" aria-hidden="true">
+                        <!-- Inline SVG illustration (replace later with generated image if desired) -->
+                        <svg viewBox="0 0 720 220" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+                                    <stop offset="0" stop-color="rgba(43,116,182,.35)"/>
+                                    <stop offset="1" stop-color="rgba(202,162,75,.35)"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="0" y="0" width="720" height="220" fill="url(#g1)"/>
+                            <!-- grid -->
+                            <g opacity=".35">
+                                <path d="M0 30H720M0 60H720M0 90H720M0 120H720M0 150H720M0 180H720" stroke="rgba(15,42,61,.35)"/>
+                                <path d="M60 0V220M120 0V220M180 0V220M240 0V220M300 0V220M360 0V220M420 0V220M480 0V220M540 0V220M600 0V220M660 0V220" stroke="rgba(15,42,61,.28)"/>
+                            </g>
+                            <!-- axes -->
+                            <path d="M70 170H680" stroke="rgba(15,42,61,.72)" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M180 200V20" stroke="rgba(15,42,61,.72)" stroke-width="2" stroke-linecap="round"/>
+                            <!-- curves -->
+                            <path d="M180 170 C 240 130, 300 120, 360 95 S 520 55, 680 60" fill="none" stroke="rgba(43,116,182,.9)" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M180 170 L 680 40" fill="none" stroke="rgba(202,162,75,.9)" stroke-width="3" stroke-linecap="round" opacity=".9"/>
+                            <!-- points -->
+                            <g fill="rgba(15,42,61,.85)">
+                                <circle cx="260" cy="136" r="4"/><circle cx="360" cy="95" r="4"/><circle cx="520" cy="60" r="4"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="mini">
+                        <h3>Что происходит на уроке</h3>
+                        <p><strong>Один параметр → новый смысл</strong>: ученик меняет k и b, видит эффект и объясняет вывод.</p>
+                    </div>
+                    <div class="mini">
+                        <h3>Что получается на выходе</h3>
+                        <p>Графические проекты на основе функций: симметрия, преобразования, композиция, сюжет.</p>
+                    </div>
+                    <div class="mini">
+                        <h3>Что это развивает</h3>
+                        <p>Критическое мышление, творческое конструирование, уверенность в решениях, аргументацию.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2) MATERIALS -->
+    <section id="materials">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2>Учебные материалы и методика</h2>
+                    <p>Набор готовых блоков, которые удобно использовать на уроках: от разогрева до финального проекта и защиты.</p>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="material">
+                    <div class="top">
+                        <span class="label">Старт</span>
+                        <div class="icon" aria-hidden="true" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2l3 7 7 .6-5.4 4.6 1.8 7-6.4-3.9-6.4 3.9 1.8-7L2 9.6 9 9l3-7z"
+                                      stroke="rgba(202,162,75,.9)" stroke-width="1.4" fill="rgba(202,162,75,.12)"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3>Мини-уроки по графикам</h3>
+                    <ul>
+                        <li>Линейные функции: k, b, пересечения</li>
+                        <li>Сдвиги, масштабирование, отражения</li>
+                        <li>Ограничения области и кусочные функции</li>
+                    </ul>
+                    <div class="art" aria-hidden="true">
+                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
+                            <rect width="720" height="120" fill="rgba(255,255,255,.0)"/>
+                            <path d="M30 90 C 120 20, 240 20, 330 90 S 540 160, 690 60"
+                                  fill="none" stroke="rgba(43,116,182,.75)" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M30 90 L 690 30" fill="none" stroke="rgba(202,162,75,.75)" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="material">
+                    <div class="top">
+                        <span class="label">Практика</span>
+                        <div class="icon" aria-hidden="true" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M4 19h16" stroke="rgba(15,42,61,.85)" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M6 15l4-4 3 3 5-7" stroke="rgba(43,116,182,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3>Карточки заданий (STEAM)</h3>
+                    <ul>
+                        <li>Тренажёры параметров (k, b, a, c)</li>
+                        <li>Симметрия и орнаменты</li>
+                        <li>Сюжеты: “город”, “природа”, “будущее”</li>
+                    </ul>
+                    <div class="art" aria-hidden="true">
+                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
+                            <defs>
+                                <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
+                                    <path d="M0 20H40M20 0V40" stroke="rgba(15,42,61,.16)"/>
+                                    <circle cx="20" cy="20" r="6" fill="rgba(202,162,75,.22)"/>
+                                </pattern>
+                            </defs>
+                            <rect width="720" height="120" fill="url(#p)"/>
+                            <path d="M80 95 Q 180 20 280 95 T 480 95 T 680 95"
+                                  fill="none" stroke="rgba(43,116,182,.85)" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="material">
+                    <div class="top">
+                        <span class="label">Финал</span>
+                        <div class="icon" aria-hidden="true" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M6 7h12" stroke="rgba(15,42,61,.75)" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M7 12h10" stroke="rgba(15,42,61,.55)" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M6 17h12" stroke="rgba(15,42,61,.75)" stroke-width="1.8" stroke-linecap="round"/>
+                                <path d="M16 3l2 2-6 6-2 .5.5-2 6-6z"
+                                      stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linejoin="round" fill="rgba(202,162,75,.12)"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3>Проект + рубрика оценивания</h3>
+                    <ul>
+                        <li>Критерии: математика, точность, композиция</li>
+                        <li>Пояснительная записка к работе</li>
+                        <li>Защита: аргументация и демонстрация</li>
+                    </ul>
+                    <div class="art" aria-hidden="true">
+                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
+                            <rect width="720" height="120" fill="rgba(255,255,255,.0)"/>
+                            <g opacity=".9">
+                                <rect x="40" y="18" width="200" height="18" rx="9" fill="rgba(43,116,182,.25)"/>
+                                <rect x="40" y="46" width="320" height="18" rx="9" fill="rgba(202,162,75,.26)"/>
+                                <rect x="40" y="74" width="260" height="18" rx="9" fill="rgba(43,116,182,.18)"/>
+                            </g>
+                            <path d="M520 90l32-32 20 20 64-64" stroke="rgba(15,42,61,.75)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+<!--            <div class="section-head" style="margin-top:18px;">-->
+<!--                <div>-->
+<!--                    <h2>Короткая структура занятия</h2>-->
+<!--                    <p>Удобный шаблон: быстро стартуем, затем исследуем, и фиксируем результат в мини-проекте.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+
+<!--            <div class="grid-2">-->
+<!--                <div class="card box">-->
+<!--                    <div class="icon" aria-hidden="true">-->
+<!--                        <svg viewBox="0 0 24 24" fill="none">-->
+<!--                            <path d="M12 3v18" stroke="rgba(202,162,75,.9)" stroke-width="1.8" stroke-linecap="round"/>-->
+<!--                            <path d="M4 12h16" stroke="rgba(15,42,61,.8)" stroke-width="1.8" stroke-linecap="round"/>-->
+<!--                            <path d="M6 7c2.2 2.8 7.8 2.8 10 0" stroke="rgba(43,116,182,.8)" stroke-width="1.8" stroke-linecap="round"/>-->
+<!--                        </svg>-->
+<!--                    </div>-->
+<!--                    <h3>Разогрев (5–8 минут)</h3>-->
+<!--                    <p>Короткая демонстрация: “что меняется, если…”, затем 2–3 быстрых вопроса по наблюдениям.</p>-->
+<!--                </div>-->
+<!--                <div class="card box">-->
+<!--                    <div class="icon" aria-hidden="true">-->
+<!--                        <svg viewBox="0 0 24 24" fill="none">-->
+<!--                            <path d="M4 17c4-8 12-8 16 0" stroke="rgba(43,116,182,.85)" stroke-width="1.8" stroke-linecap="round"/>-->
+<!--                            <path d="M7 14l3-3 2 2 5-6" stroke="rgba(202,162,75,.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>-->
+<!--                        </svg>-->
+<!--                    </div>-->
+<!--                    <h3>Исследование + мини-проект (25–35 минут)</h3>-->
+<!--                    <p>Ученики строят элементы и доводят до композиции: параметры, ограничения, симметрия, финальная презентация.</p>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+    </section>
+
+    <!-- 3) GALLERY -->
+    <section id="works">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <h2>Галерея работ учеников (Desmos)</h2>
+                    <p>Поиск и фильтры по ученику, классу и группе. Работы открываются и подсвечиваются как портфолио.</p>
+                </div>
+            </div>
+
+            <div class="card gallery">
+                <div class="toolbar">
+                    <div class="filters">
+                        <div class="input" title="Поиск по ученику, классу или номеру">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="rgba(15,42,61,.70)" stroke-width="1.8"/>
+                                <path d="M16.5 16.5 21 21" stroke="rgba(15,42,61,.70)" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                            <input id="q" type="search" placeholder="Поиск: Еркежан, 9Н-2, №5…" />
+                        </div>
+
+                        <select id="grade">
+                            <option value="">Все классы</option>
+                            <option value="8">8 класс</option>
+                            <option value="9">9 класс</option>
+                            <option value="10">10 класс</option>
+                            <option value="11">11 класс</option>
+                            <option value="12">12 класс</option>
+                        </select>
+
+                        <select id="group">
+                            <option value="">Все группы</option>
+                            <option value="1">Группа 1</option>
+                            <option value="2">Группа 2</option>
+                            <option value="3">Группа 3</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button class="btn" id="reset">Сброс</button>
+                        <div style="color:var(--muted); font-size:12px;">
+                            Показано: <b id="count">0</b>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="work-grid" id="workGrid" aria-live="polite"></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- 4) CONTACTS -->
+<footer id="contact">
+    <div class="container">
+        <div class="section-head">
+            <div>
+                <h2>Контактная информация</h2>
+                <p>Нажмите на поля справа, чтобы скопировать данные.</p>
+            </div>
+        </div>
+
+        <div class="contact">
+            <div class="left">
+                <h3>Автор проекта</h3>
+                <p>
+                    STEAM и Desmos: модель развития исследовательских и творческих навыков учащихся 7–12 классов
+                    через визуализацию, параметризацию и проектную работу.
+                </p>
+
+                <div class="list">
+                    <div class="item">
+                        <div class="icon" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 3l8 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9l8-6z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
+                                <path d="M9 21V12h6v9" stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <b>Учреждение</b>
+                            <span>Назарбаев Интеллектуальная школа физико-математического направления, г. Усть-Каменогорск</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footnote">© STEAM × Desmos. Одностраничный сайт (single-file).</div>
+            </div>
+
+            <div class="right">
+                <h3>Связаться</h3>
+
+                <div class="list">
+                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="Раисова Бакытгуль Токтасиновна">
+                        <div class="icon" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
+                                <path d="M4 21a8 8 0 0 1 16 0" stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div style="text-align:left;">
+                            <b>Имя</b>
+                            <span>Раисова Бакытгуль Токтасиновна</span>
+                        </div>
+                    </button>
+
+                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="raissova_b@ukk.nis.edu.kz">
+                        <div class="icon" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 6h16v12H4z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
+                                <path d="M4 7l8 6 8-6" stroke="rgba(43,116,182,.85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div style="text-align:left;">
+                            <b>Email</b>
+                            <span>raissova_b@ukk.nis.edu.kz</span>
+                        </div>
+                    </button>
+
+                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="+7 777 293 6105">
+                        <div class="icon" style="margin:0;">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M6.5 3.5l3 2-1.5 3c1.2 2.4 3.1 4.3 5.5 5.5l3-1.5 2 3c.4.6.2 1.4-.4 1.8-1.6 1-3.6 1.2-5.4.6-4.8-1.6-8.8-5.6-10.4-10.4-.6-1.8-.4-3.8.6-5.4.4-.6 1.2-.8 1.8-.4z"
+                                      stroke="rgba(15,42,61,.8)" stroke-width="1.6" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div style="text-align:left;">
+                            <b>Телефон</b>
+                            <span>+7 777 293 6105</span>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="footnote" id="copyHint">После клика значение копируется в буфер обмена.</div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<a class="btn to-top" id="toTop" href="#top" aria-label="Наверх">Наверх</a>
+
+<script>
+    // --------------------------
+    // Data (ученические работы)
+    // --------------------------
+    const STUDENT_WORKS = [
+        {
+            n: 1,
+            url: "https://www.desmos.com/calculator/vxq5sxkp4c",
+            name: "Зекенова Еркежан",
+            classLabel: "8М",
+            group: "2",
+            title: "Симметричный узор на координатной плоскости",
+            desc: "Построение узора с помощью линейных функций y=kx+b и y=√x. Симметрия получена отражением относительно оси y."
+        },
+        { n: 2, url: "https://www.desmos.com/calculator/mjhmodjwnl?lang=ru", name: "Мырзахан Жансұлтан", classLabel: "9Н", group: "2", title: "Графическая композиция", desc: "Исследование графиков и композиции с использованием преобразований." },
+        { n: 3, url: "https://www.desmos.com/calculator/bjuxwq61ha", name: "Тоқанова Ақерке", classLabel: "9Н", group: "3", title: "График-арт", desc: "Композиция на основе функций и симметрий." },
+        { n: 4, url: "https://www.desmos.com/calculator/m1dqbiegq6?lang=ru", name: "Ануарбекқызы Айман", classLabel: "9Н", group: "3", title: "Графический рисунок", desc: "Комбинация кривых и прямых, настройка параметров для формы." },
+        { n: 5, url: "https://www.desmos.com/calculator/nt2rjkzgds?lang=ru", name: "Бекжан", classLabel: "8В", group: "1", title: "Композиция в Desmos", desc: "Построение рисунка через систему функций и ограничений области." },
+        { n: 6, url: "https://www.desmos.com/calculator/anadssv9fd?lang=ru", name: "Қалибекұлы Төрежан", classLabel: "12А", group: "1", title: "Сложная модель", desc: "Продвинутая композиция: точность, детализация, управление параметрами." },
+        { n: 7, url: "https://www.desmos.com/calculator/shpfjmfcz4", name: "Қуанбай Нұрхан", classLabel: "9Н", group: "1", title: "Графическая работа", desc: "Композиция с преобразованиями и симметрией." },
+        { n: 8, url: "https://www.desmos.com/calculator/41zbtimqaj?lang=ru", name: "Сахариянов Мансұр", classLabel: "8А", group: "3", title: "График и сюжет", desc: "Сочетание элементов через функции и ограничения области." },
+        { n: 9, url: "https://www.desmos.com/calculator/4ey2dgwg97?lang=ru", name: "Сахов Амирхан", classLabel: "9N", group: "2", title: "График без названия", desc: "Композиция на основе функций и преобразований." },
+        { n: 10, url: "https://www.desmos.com/calculator/lpe4ibbwak?lang=ru", name: "Бақберген Сырым", classLabel: "11Н", group: "", title: "Проект (11 класс)", desc: "Работа с преобразованиями и детализацией графиков." },
+        { n: 11, url: "https://www.desmos.com/calculator/b5ypte30cd?lang=ru", name: "Даутқазы Надия", classLabel: "11Н", group: "", title: "Проект (11 класс)", desc: "Композиция на основе функций с акцентом на форму и симметрию." },
+        { n: 12, url: "https://www.desmos.com/calculator/wvboin0t0u?lang=ru", name: "Бақытжан Дінмұхамед", classLabel: "10G", group: "", title: "Проект (10 класс)", desc: "Сюжетная визуализация: подбор функций и параметров для образа." },
+    ];
+
+    // --------------------------
+    // Helpers
+    // --------------------------
+    const el = (tag, attrs={}, children=[]) => {
+        const node = document.createElement(tag);
+        for (const [k,v] of Object.entries(attrs)){
+            if (k === "class") node.className = v;
+            else if (k === "html") node.innerHTML = v;
+            else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2), v);
+            else node.setAttribute(k, v);
+        }
+        for (const c of children) node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
+        return node;
+    };
+
+    const normalizeEmbed = (url) => {
+        if (!url) return "";
+        try{
+            const u = new URL(url);
+            const path = u.pathname.toLowerCase().includes("/calculator/")
+                ? u.pathname
+                : u.pathname.replace("/Calculator/", "/calculator/");
+            const id = path.split("/").filter(Boolean).pop();
+            const lang = u.searchParams.get("lang") || "ru";
+            return `https://www.desmos.com/calculator/${id}?embed&lang=${encodeURIComponent(lang)}`;
+        }catch(e){
+            return url;
+        }
+    };
+
+    const parseGrade = (classLabel) => {
+        const m = String(classLabel || "").match(/^(\d{1,2})/);
+        return m ? m[1] : "";
+    };
+
+    // --------------------------
+    // Render works
+    // --------------------------
+    const grid = document.getElementById("workGrid");
+    const count = document.getElementById("count");
+
+    function renderWorks(list){
+        grid.innerHTML = "";
+        count.textContent = String(list.length);
+
+        for (const w of list){
+            const grade = parseGrade(w.classLabel);
+            const embed = normalizeEmbed(w.url);
+
+            const title = el("div", {}, [
+                el("h3", {}, [`№${w.n}. ${w.name}`]),
+                el("div", { class:"meta" }, [
+                    el("span", { class:"pill" }, [`Класс: ${w.classLabel || "—"}`]),
+                    el("span", { class:"pill" }, [`Группа: ${w.group || "—"}`]),
+                    el("span", { class:"pill" }, [`Уровень: ${grade ? grade+" класс" : "—"}`]),
+                ]),
+            ]);
+
+            const actions = el("div", { class:"work-actions" }, [
+                el("a", { class:"btn", href: w.url, target: "_blank", rel:"noopener", title: "Открыть в Desmos" }, [ "Открыть" ]),
+                el("button", { class:"btn", "data-copy": w.url, title:"Скопировать ссылку" }, [ "Копировать" ]),
+            ]);
+
+            const frame = el("div", { class:"frame" }, [
+                el("iframe", {
+                    title: `${w.name} — работа №${w.n}`,
+                    loading: "lazy",
+                    referrerpolicy: "no-referrer-when-downgrade",
+                    allowfullscreen: "true",
+                    src: embed
+                })
+            ]);
+
+            const work = el("article", {
+                class:"work",
+                "data-grade": grade,
+                "data-group": w.group || "",
+                "data-search": `${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title}`.toLowerCase()
+            }, [
+                el("div", { class:"work-head" }, [ title, actions ]),
+                el("div", { class:"work-body" }, [
+                    el("div", { style:"font-weight:650; font-size:13px;" }, [w.title || "Работа"]),
+                    el("div", { class:"desc" }, [w.desc || ""]),
+                    frame
+                ])
+            ]);
+
+            grid.appendChild(work);
+        }
+
+        hookCopyButtons();
+    }
+
+    // --------------------------
+    // Filtering
+    // --------------------------
+    const q = document.getElementById("q");
+    const gradeSel = document.getElementById("grade");
+    const groupSel = document.getElementById("group");
+    const resetBtn = document.getElementById("reset");
+
+    function applyFilters(){
+        const query = (q.value || "").trim().toLowerCase();
+        const grade = gradeSel.value;
+        const group = groupSel.value;
+
+        const filtered = STUDENT_WORKS.filter(w => {
+            const g = parseGrade(w.classLabel);
+            const inQ = !query || (`${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase().includes(query));
+            const inGrade = !grade || g === grade;
+            const inGroup = !group || String(w.group || "") === String(group);
+            return inQ && inGrade && inGroup;
+        });
+
+        renderWorks(filtered);
+    }
+
+    q.addEventListener("input", applyFilters);
+    gradeSel.addEventListener("change", applyFilters);
+    groupSel.addEventListener("change", applyFilters);
+    resetBtn.addEventListener("click", () => {
+        q.value = "";
+        gradeSel.value = "";
+        groupSel.value = "";
+        applyFilters();
+    });
+
+    // --------------------------
+    // Copy
+    // --------------------------
+    function hookCopyButtons(){
+        document.querySelectorAll("[data-copy]").forEach(btn => {
+            btn.addEventListener("click", async () => {
+                const text = btn.getAttribute("data-copy") || "";
+                try{
+                    await navigator.clipboard.writeText(text);
+                    toast("Скопировано в буфер обмена.");
+                }catch(e){
+                    const ta = document.createElement("textarea");
+                    ta.value = text;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand("copy");
+                    ta.remove();
+                    toast("Скопировано.");
+                }
+            }, { once:true });
+        });
+    }
+
+    let toastTimer;
+    function toast(msg){
+        let t = document.getElementById("toast");
+        if (!t){
+            t = document.createElement("div");
+            t.id = "toast";
+            t.style.position = "fixed";
+            t.style.left = "16px";
+            t.style.bottom = "16px";
+            t.style.padding = "10px 12px";
+            t.style.borderRadius = "14px";
+            t.style.border = "1px solid rgba(15,42,61,.14)";
+            t.style.background = "rgba(255,255,255,.92)";
+            t.style.boxShadow = "0 12px 34px rgba(15,42,61,.12)";
+            t.style.color = "rgba(15,42,61,.86)";
+            t.style.fontSize = "13px";
+            t.style.zIndex = "999";
+            document.body.appendChild(t);
+        }
+        t.textContent = msg;
+        t.style.opacity = "1";
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { t.style.opacity = "0"; }, 1600);
+    }
+
+    // --------------------------
+    // Mobile nav
+    // --------------------------
+    const burger = document.getElementById("burger");
+    const mobileNav = document.getElementById("mobileNav");
+    burger?.addEventListener("click", () => mobileNav.classList.toggle("open"));
+    mobileNav?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileNav.classList.remove("open")));
+
+    // --------------------------
+    // Back to top
+    // --------------------------
+    const toTop = document.getElementById("toTop");
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 600) toTop.classList.add("show");
+        else toTop.classList.remove("show");
+    });
+
+    // init
+    renderWorks(STUDENT_WORKS);
+</script>
+</body>
+</html>
