@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>STEAM × Desmos — Математика как исследование</title>
-    <meta name="description" content="STEAM и Desmos: визуализация, исследование, творчество. Галерея работ учеников (Desmos)." />
+    <meta name="description" content="STEAM и Desmos: визуализация, исследование, творчество. Галерея работ учеников (Desmos) и видеоматериалы." />
     <style>
         :root{
             --bg: #fbf7ef;
@@ -28,9 +28,31 @@
             background: radial-gradient(1200px 700px at 20% -10%, rgba(43,116,182,.10), transparent 60%),
             radial-gradient(900px 600px at 90% 20%, rgba(202,162,75,.12), transparent 55%),
             var(--bg);
+            overflow-x:hidden;
         }
         a{ color:inherit; text-decoration:none; }
         .container{ max-width: var(--max); margin:0 auto; padding: 0 18px; }
+
+        /* Motion safety */
+        @media (prefers-reduced-motion: reduce){
+            html{ scroll-behavior:auto; }
+            *{ animation:none !important; transition:none !important; }
+        }
+
+        /* Reveal animation */
+        .reveal{
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity .6s ease, transform .6s ease;
+            will-change: opacity, transform;
+        }
+        .reveal.in{
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .stagger > *{
+            transition-delay: var(--d, 0ms);
+        }
 
         header{
             position: sticky; top:0; z-index: 50;
@@ -53,7 +75,9 @@
             border: 1px solid rgba(15,42,61,.10);
             display:grid; place-items:center;
             box-shadow: 0 10px 22px rgba(15,42,61,.10);
+            transition: transform .2s ease;
         }
+        .mark:hover{ transform: translateY(-1px); }
         .mark svg{ width: 22px; height: 22px; }
         .brand h1{ font-size: 14px; margin:0; letter-spacing:.2px; }
         .brand small{ display:block; color: var(--muted); margin-top:2px; font-size: 12px; }
@@ -68,10 +92,12 @@
             padding: 8px 10px;
             border-radius: 12px;
             border: 1px solid transparent;
+            transition: background .18s ease, border-color .18s ease, transform .18s ease;
         }
         nav a:hover{
             background: rgba(43,116,182,.08);
             border-color: rgba(43,116,182,.14);
+            transform: translateY(-1px);
         }
         .nav-actions{ display:flex; gap:10px; align-items:center; }
         .btn{
@@ -85,12 +111,16 @@
             font-size: 13px;
             cursor:pointer;
             user-select:none;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
         }
-        .btn:hover{ transform: translateY(-1px); }
+        .btn:hover{ transform: translateY(-2px); box-shadow: 0 14px 34px rgba(15,42,61,.12); }
         .btn:active{ transform: translateY(0); }
         .btn.primary{
             background: linear-gradient(145deg, rgba(43,116,182,.15), rgba(202,162,75,.16));
             border-color: rgba(15,42,61,.12);
+        }
+        .btn.ghost{
+            background: rgba(255,255,255,.55);
         }
         .burger{ display:none; }
 
@@ -100,9 +130,10 @@
             display:block; padding: 10px 10px; border-radius: 14px;
             border:1px solid rgba(15,42,61,.10); background: rgba(255,255,255,.65);
             margin-top: 8px;
+            transition: transform .18s ease;
         }
+        .mobile a:hover{ transform: translateY(-1px); }
 
-        /* Layout */
         section{ padding: 18px 0; }
         .section-head{
             display:flex; align-items:flex-end; justify-content:space-between;
@@ -127,9 +158,11 @@
             border: 1px solid rgba(15,42,61,.12);
             border-radius: var(--radius2);
             box-shadow: var(--shadow);
+            transition: transform .20s ease, box-shadow .20s ease;
         }
+        .card.hover:hover{ transform: translateY(-2px); box-shadow: 0 18px 52px rgba(15,42,61,.14); }
 
-        /* Block 1: Info */
+        /* Block 1 (Info) */
         .hero{ padding: 34px 0 10px; }
         .hero-grid{
             display:grid; gap: 18px;
@@ -193,93 +226,140 @@
             flex-direction:column;
             gap: 12px;
         }
+
+        .hero-media{
+            border-radius: var(--radius2);
+            border: 1px solid rgba(15,42,61,.12);
+            overflow:hidden;
+            background: rgba(255,255,255,.72);
+            box-shadow: 0 12px 34px rgba(15,42,61,.10);
+            position:relative;
+        }
+        .hero-media img{
+            width:100%;
+            height: 240px;
+            object-fit: cover;
+            display:block;
+            transform: scale(1.01);
+        }
+        .hero-media .badge{
+            position:absolute;
+            left: 12px;
+            bottom: 12px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(15,42,61,.52);
+            color: rgba(255,255,255,.92);
+            font-size: 12px;
+            backdrop-filter: blur(6px);
+        }
+        .hero-media .shine{
+            position:absolute;
+            inset:-40% -40% auto auto;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(circle at 30% 30%, rgba(202,162,75,.35), transparent 60%);
+            transform: rotate(20deg);
+            pointer-events:none;
+        }
+
         .mini{
             padding: 14px;
             border-radius: var(--radius);
             border: 1px solid rgba(15,42,61,.12);
             background: rgba(255,255,255,.72);
+            transition: transform .18s ease, box-shadow .18s ease;
         }
+        .mini:hover{ transform: translateY(-2px); box-shadow: 0 14px 34px rgba(15,42,61,.10); }
         .mini h3{ margin:0 0 8px; font-size: 13px; letter-spacing:.2px; }
         .mini p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.5; }
         .mini strong{ color: var(--ink); }
 
-        .hero-illustration{
-            border-radius: var(--radius);
-            border: 1px solid rgba(15,42,61,.12);
-            background: radial-gradient(600px 260px at 20% 20%, rgba(43,116,182,.10), transparent 60%),
-            radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.12), transparent 55%),
-            rgba(255,255,255,.70);
-            overflow:hidden;
-            min-height: 168px;
-            display:grid;
-            place-items:center;
-        }
-        .hero-illustration svg{ width: 100%; height: 180px; display:block; }
-
-        /* Block 2: Materials */
+        /* Videos */
         .grid-3{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-        .grid-2{ display:grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-
-        .box{ padding: 16px; border-radius: var(--radius); }
-        .box h3{ margin:0 0 8px; font-size: 15px; }
-        .box p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-        .icon{
-            width: 40px; height: 40px; border-radius: 16px;
-            background: linear-gradient(145deg, rgba(43,116,182,.14), rgba(202,162,75,.16));
-            border: 1px solid rgba(15,42,61,.12);
-            display:grid; place-items:center;
-            margin-bottom: 10px;
-        }
-        .icon svg{ width: 20px; height: 20px; }
-
-        .material{
-            padding: 16px;
+        .video-card{
             border-radius: var(--radius2);
             border: 1px solid rgba(15,42,61,.12);
             background: rgba(255,255,255,.78);
             box-shadow: 0 12px 34px rgba(15,42,61,.10);
             overflow:hidden;
-            position:relative;
-        }
-        .material:before{
-            content:"";
-            position:absolute; inset:auto -30px -30px auto;
-            width: 160px; height: 160px;
-            background: radial-gradient(circle at 30% 30%, rgba(202,162,75,.25), transparent 60%);
-            transform: rotate(22deg);
-            pointer-events:none;
-        }
-        .material > *{ position:relative; }
-        .material .top{
             display:flex;
-            justify-content:space-between;
-            gap: 12px;
+            flex-direction:column;
+            min-height: 320px;
+            transition: transform .20s ease, box-shadow .20s ease;
+        }
+        .video-card:hover{ transform: translateY(-2px); box-shadow: 0 18px 52px rgba(15,42,61,.14); }
+        .video-head{
+            padding: 14px 14px 10px;
+            display:flex; justify-content:space-between; gap: 12px;
             align-items:flex-start;
         }
-        .material .label{
-            display:inline-block;
+        .video-title{
+            margin:0;
+            font-size: 14px;
+            letter-spacing:.1px;
+            line-height: 1.25;
+        }
+        .video-meta{
+            margin-top: 6px;
+            color: var(--muted);
             font-size: 12px;
-            color: rgba(15,42,61,.80);
-            padding: 4px 8px;
+            display:flex; flex-wrap:wrap; gap: 8px;
+        }
+        .pill{
+            display:inline-flex; align-items:center; gap: 6px;
+            padding: 5px 8px;
             border-radius: 999px;
             border: 1px solid rgba(15,42,61,.12);
-            background: rgba(251,247,239,.85);
+            background: rgba(251,247,239,.75);
+            color: rgba(15,42,61,.80);
         }
-        .material h3{ margin: 10px 0 8px; font-size: 15px; }
-        .material ul{ margin:0; padding-left: 18px; color: var(--muted); font-size: 13px; line-height: 1.55; }
-        .material li{ margin: 6px 0; }
-        .material .art{
-            margin-top: 12px;
+        .video-body{
+            padding: 0 14px 14px;
+            display:flex; flex-direction:column; gap: 10px;
+            flex: 1;
+        }
+        .thumb{
             border-radius: 16px;
             border: 1px solid rgba(15,42,61,.12);
             overflow:hidden;
-            background: rgba(251,247,239,.75);
+            background-size: cover;
+            background-position: center;
+            min-height: 190px;
+            position:relative;
+            cursor:pointer;
         }
-        .material .art svg{ width: 100%; height: 120px; display:block; }
+        .thumb .play{
+            position:absolute; inset:0;
+            display:grid; place-items:center;
+            background: linear-gradient(180deg, rgba(15,42,61,.05), rgba(15,42,61,.20));
+            transition: background .18s ease;
+        }
+        .thumb:hover .play{ background: linear-gradient(180deg, rgba(15,42,61,.04), rgba(15,42,61,.24)); }
+        .play-btn{
+            width: 64px; height: 64px;
+            border-radius: 22px;
+            border: 1px solid rgba(255,255,255,.55);
+            background: rgba(15,42,61,.50);
+            backdrop-filter: blur(6px);
+            display:grid; place-items:center;
+            box-shadow: 0 12px 30px rgba(15,42,61,.18);
+            transform: translateY(0);
+            transition: transform .18s ease;
+        }
+        .thumb:hover .play-btn{ transform: translateY(-2px); }
+        .play-btn svg{ width: 26px; height: 26px; }
+        .yt-frame{
+            width:100%;
+            height: 190px;
+            border:0;
+            display:block;
+            background:white;
+        }
 
-        /* Block 3: Gallery (Desmos) */
+        /* Gallery */
         .gallery{ padding: 16px; }
-
         .toolbar{
             display:flex; flex-wrap:wrap; gap: 10px;
             align-items:center;
@@ -310,7 +390,6 @@
             font-size: 13px;
             outline:none;
         }
-
         .work-grid{
             display:grid; gap: 14px;
             grid-template-columns: repeat(2, 1fr);
@@ -324,52 +403,26 @@
             display:flex;
             flex-direction:column;
             min-height: 380px;
+            transition: transform .20s ease, box-shadow .20s ease;
         }
+        .work:hover{ transform: translateY(-2px); box-shadow: 0 18px 52px rgba(15,42,61,.14); }
         .work-head{
             padding: 14px 14px 10px;
             display:flex; justify-content:space-between; gap: 12px;
             align-items:flex-start;
         }
-        .work h3{
-            margin:0;
-            font-size: 14px;
-            letter-spacing:.1px;
-        }
+        .work h3{ margin:0; font-size: 14px; letter-spacing:.1px; }
         .meta{
             margin-top: 6px;
             color: var(--muted);
             font-size: 12px;
             display:flex; flex-wrap:wrap; gap: 8px;
         }
-        .pill{
-            display:inline-flex; align-items:center; gap: 6px;
-            padding: 5px 8px;
-            border-radius: 999px;
-            border: 1px solid rgba(15,42,61,.12);
-            background: rgba(251,247,239,.75);
-            color: rgba(15,42,61,.80);
-        }
         .work-actions{ display:flex; gap: 8px; flex-wrap:wrap; justify-content:flex-end; }
         .work-body{
             padding: 0 14px 14px;
             display:flex; flex-direction:column; gap: 10px;
             flex: 1;
-        }
-        .frame{
-            border-radius: 16px;
-            border: 1px solid rgba(15,42,61,.12);
-            overflow:hidden;
-            background: radial-gradient(600px 260px at 20% 20%, rgba(43,116,182,.10), transparent 60%),
-            radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.12), transparent 55%),
-            rgba(255,255,255,.70);
-            min-height: 260px;
-        }
-        iframe{
-            width: 100%;
-            height: 260px;
-            border: 0;
-            display:block;
-            background: white;
         }
         .desc{
             color: var(--muted);
@@ -378,7 +431,55 @@
             min-height: 42px;
         }
 
-        /* Block 4: Contact */
+        /* Desmos frame optimized */
+        .frame{
+            border-radius: 16px;
+            border: 1px solid rgba(15,42,61,.12);
+            overflow:hidden;
+            background: radial-gradient(600px 260px at 20% 20%, rgba(43,116,182,.10), transparent 60%),
+            radial-gradient(560px 260px at 90% 30%, rgba(202,162,75,.12), transparent 55%),
+            rgba(255,255,255,.70);
+            min-height: 260px;
+            position:relative;
+        }
+        iframe.desmos{
+            width: 100%;
+            height: 260px;
+            border: 0;
+            display:block;
+            background: white;
+        }
+        .frame-placeholder{
+            position:absolute; inset:0;
+            display:grid; place-items:center;
+            padding: 14px;
+            background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.65));
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(255,255,255,.25);
+        }
+        .ph-inner{
+            width: min(360px, 100%);
+            padding: 14px;
+            border-radius: 18px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.85);
+            box-shadow: 0 14px 34px rgba(15,42,61,.12);
+            text-align:center;
+        }
+        .ph-title{
+            font-size: 13px;
+            font-weight: 650;
+            margin-bottom: 6px;
+            color: rgba(15,42,61,.86);
+        }
+        .ph-sub{
+            font-size: 12px;
+            color: rgba(15,42,61,.60);
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        /* Contacts */
         footer{ padding: 22px 0 34px; }
         .contact{
             padding: 16px;
@@ -392,23 +493,166 @@
             border-radius: var(--radius2);
             border: 1px solid rgba(15,42,61,.12);
             background: rgba(255,255,255,.78);
+            transition: transform .20s ease, box-shadow .20s ease;
+        }
+        .contact .left:hover, .contact .right:hover{
+            transform: translateY(-2px);
+            box-shadow: 0 18px 52px rgba(15,42,61,.14);
         }
         .contact h3{ margin:0 0 10px; font-size: 16px; }
         .contact p{ margin:0; color: var(--muted); font-size: 13px; line-height: 1.55; }
-        .list{ margin-top: 12px; display:grid; gap: 10px; }
-        .item{
-            display:flex; gap: 10px; align-items:flex-start;
+
+        .author{
+            display:flex;
+            gap: 12px;
+            align-items:center;
+            margin-bottom: 12px;
+        }
+        .avatar{
+            width: 56px;
+            height: 56px;
+            border-radius: 20px;
+            border: 1px solid rgba(15,42,61,.12);
+            overflow:hidden;
+            background: rgba(251,247,239,.85);
+            flex: 0 0 auto;
+        }
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit: cover;
+            display:block;
+        }
+        .author-name{
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .1px;
+            margin:0;
+        }
+        .author-sub{
+            margin-top: 4px;
+            color: rgba(15,42,61,.62);
+            font-size: 12px;
+        }
+
+        .contact-lines{
+            display:grid;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .line{
+            display:flex;
+            gap: 10px;
+            align-items:center;
             padding: 10px 12px;
             border-radius: 16px;
             border: 1px solid rgba(15,42,61,.12);
             background: rgba(251,247,239,.72);
+            cursor:pointer;
+            transition: transform .18s ease, box-shadow .18s ease;
         }
-        .item b{ display:block; font-size: 13px; margin-bottom: 2px; }
-        .item span{ color: var(--muted); font-size: 12px; }
+        .line:hover{ transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15,42,61,.10); }
+        .line svg{ width: 18px; height: 18px; flex: 0 0 auto; }
+        .line span{
+            font-size: 13px;
+            color: rgba(15,42,61,.86);
+            word-break: break-word;
+        }
+
         .footnote{
             margin-top: 12px;
             color: rgba(15,42,61,.62);
             font-size: 12px;
+            line-height: 1.45;
+        }
+
+        /* Modal */
+        .modal{
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display:none;
+            align-items:center;
+            justify-content:center;
+            padding: 18px;
+            background: rgba(15,42,61,.40);
+            backdrop-filter: blur(6px);
+        }
+        .modal.open{ display:flex; }
+        .modal-card{
+            width: min(820px, 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.92);
+            box-shadow: 0 18px 60px rgba(15,42,61,.22);
+            overflow:hidden;
+            transform: translateY(6px);
+            animation: pop .22s ease forwards;
+        }
+        @keyframes pop{
+            to{ transform: translateY(0); }
+        }
+        .modal-head{
+            padding: 14px 16px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 10px;
+            border-bottom: 1px solid rgba(15,42,61,.10);
+            background: linear-gradient(145deg, rgba(43,116,182,.10), rgba(202,162,75,.10));
+        }
+        .modal-head h3{
+            margin:0;
+            font-size: 15px;
+            letter-spacing:.1px;
+        }
+        .modal-body{
+            padding: 16px;
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .field{
+            display:flex;
+            flex-direction:column;
+            gap: 6px;
+        }
+        .field label{
+            font-size: 12px;
+            color: rgba(15,42,61,.75);
+        }
+        .field input, .field textarea{
+            border: 1px solid rgba(15,42,61,.14);
+            background: rgba(255,255,255,.95);
+            border-radius: 14px;
+            padding: 10px 12px;
+            font-size: 13px;
+            outline:none;
+            width:100%;
+            transition: box-shadow .18s ease, border-color .18s ease;
+        }
+        .field input:focus, .field textarea:focus{
+            border-color: rgba(43,116,182,.28);
+            box-shadow: 0 0 0 4px rgba(43,116,182,.10);
+        }
+        .field textarea{
+            min-height: 110px;
+            resize: vertical;
+        }
+        .modal-foot{
+            padding: 14px 16px;
+            border-top: 1px solid rgba(15,42,61,.10);
+            display:flex;
+            gap: 10px;
+            justify-content:flex-end;
+            flex-wrap:wrap;
+            background: rgba(251,247,239,.65);
+        }
+        .hint{
+            padding: 0 16px 16px;
+            color: rgba(15,42,61,.62);
+            font-size: 12px;
+            line-height: 1.45;
         }
 
         /* Floating */
@@ -428,17 +672,17 @@
             transform: translateY(0);
         }
 
-        /* Responsive */
         @media (max-width: 980px){
             .hero-grid{ grid-template-columns: 1fr; }
             .grid-3{ grid-template-columns: 1fr; }
-            .grid-2{ grid-template-columns: 1fr; }
             .work-grid{ grid-template-columns: 1fr; }
             .contact{ grid-template-columns: 1fr; }
             .brand{ min-width: auto; }
             nav ul{ display:none; }
             .burger{ display:inline-flex; }
             .mobile{ display:none; }
+            .modal-body{ grid-template-columns: 1fr; }
+            .hero-media img{ height: 220px; }
         }
     </style>
 </head>
@@ -466,25 +710,25 @@
             <nav aria-label="Основная навигация">
                 <ul>
                     <li><a href="#info">Информация</a></li>
-                    <li><a href="#materials">Учебные материалы</a></li>
+                    <li><a href="#materials">Видеоматериалы</a></li>
                     <li><a href="#works">Галерея Desmos</a></li>
                     <li><a href="#contact">Контакты</a></li>
                 </ul>
             </nav>
 
             <div class="nav-actions">
-                <button class="btn burger" id="burger" aria-label="Открыть меню">
+                <button class="btn burger" id="burger" aria-label="Открыть меню" type="button">
                     <span>Меню</span>
                 </button>
-                <a class="btn primary" href="#works" title="Перейти к галерее">
-                    <span>Смотреть работы</span>
-                </a>
+                <button class="btn primary" id="openSubmitTop" type="button">
+                    <span>Отправить работу</span>
+                </button>
             </div>
         </div>
 
         <div class="mobile" id="mobileNav" aria-label="Мобильная навигация">
             <a href="#info">Информация</a>
-            <a href="#materials">Учебные материалы</a>
+            <a href="#materials">Видеоматериалы</a>
             <a href="#works">Галерея Desmos</a>
             <a href="#contact">Контакты</a>
         </div>
@@ -496,7 +740,7 @@
     <section class="hero" id="info">
         <div class="container">
             <div class="hero-grid">
-                <div class="card hero-left">
+                <div class="card hover hero-left reveal">
                     <div class="kicker"><span class="dot"></span> STEAM-подход и Desmos для 7–12 классов</div>
                     <h2>Математика становится понятной, когда её можно увидеть и исследовать</h2>
                     <p>
@@ -504,57 +748,36 @@
                         наблюдает закономерности и превращает результаты в аккуратные графические проекты.
                     </p>
 
-                    <div class="hero-tags" aria-label="Ключевые акценты">
-                        <div class="tag"><strong>Визуализация</strong> вместо заучивания</div>
-                        <div class="tag"><strong>Исследование</strong> через параметры</div>
-                        <div class="tag"><strong>Творчество</strong> как индикатор понимания</div>
-                        <div class="tag"><strong>Проектность</strong> и защита результата</div>
+                    <div class="hero-tags stagger" aria-label="Ключевые акценты">
+                        <div class="tag" style="--d:60ms"><strong>Визуализация</strong> вместо заучивания</div>
+                        <div class="tag" style="--d:120ms"><strong>Исследование</strong> через параметры</div>
+                        <div class="tag" style="--d:180ms"><strong>Творчество</strong> как индикатор понимания</div>
+                        <div class="tag" style="--d:240ms"><strong>Проектность</strong> и защита результата</div>
                     </div>
 
                     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
-                        <a class="btn" href="#materials">Перейти к материалам</a>
-                        <a class="btn" href="#works">Открыть галерею</a>
+                        <a class="btn" href="#materials">Перейти к видео</a>
+                        <a class="btn ghost" href="#works">Открыть галерею</a>
                     </div>
                 </div>
 
-                <div class="card hero-right">
-                    <div class="hero-illustration" aria-hidden="true">
-                        <!-- Inline SVG illustration (replace later with generated image if desired) -->
-                        <svg viewBox="0 0 720 220" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
-                                    <stop offset="0" stop-color="rgba(43,116,182,.35)"/>
-                                    <stop offset="1" stop-color="rgba(202,162,75,.35)"/>
-                                </linearGradient>
-                            </defs>
-                            <rect x="0" y="0" width="720" height="220" fill="url(#g1)"/>
-                            <!-- grid -->
-                            <g opacity=".35">
-                                <path d="M0 30H720M0 60H720M0 90H720M0 120H720M0 150H720M0 180H720" stroke="rgba(15,42,61,.35)"/>
-                                <path d="M60 0V220M120 0V220M180 0V220M240 0V220M300 0V220M360 0V220M420 0V220M480 0V220M540 0V220M600 0V220M660 0V220" stroke="rgba(15,42,61,.28)"/>
-                            </g>
-                            <!-- axes -->
-                            <path d="M70 170H680" stroke="rgba(15,42,61,.72)" stroke-width="2" stroke-linecap="round"/>
-                            <path d="M180 200V20" stroke="rgba(15,42,61,.72)" stroke-width="2" stroke-linecap="round"/>
-                            <!-- curves -->
-                            <path d="M180 170 C 240 130, 300 120, 360 95 S 520 55, 680 60" fill="none" stroke="rgba(43,116,182,.9)" stroke-width="3" stroke-linecap="round"/>
-                            <path d="M180 170 L 680 40" fill="none" stroke="rgba(202,162,75,.9)" stroke-width="3" stroke-linecap="round" opacity=".9"/>
-                            <!-- points -->
-                            <g fill="rgba(15,42,61,.85)">
-                                <circle cx="260" cy="136" r="4"/><circle cx="360" cy="95" r="4"/><circle cx="520" cy="60" r="4"/>
-                            </g>
-                        </svg>
+                <div class="card hover hero-right reveal">
+                    <!-- Work image in first block -->
+                    <div class="hero-media reveal" style="transition-delay:80ms">
+                        <div class="shine" aria-hidden="true"></div>
+                        <img src="assets/work.jpg" alt="Desmos-art: пример работы" loading="lazy">
+                        <div class="badge">Desmos-art: пример работы</div>
                     </div>
 
-                    <div class="mini">
+                    <div class="mini reveal" style="transition-delay:120ms">
                         <h3>Что происходит на уроке</h3>
                         <p><strong>Один параметр → новый смысл</strong>: ученик меняет k и b, видит эффект и объясняет вывод.</p>
                     </div>
-                    <div class="mini">
+                    <div class="mini reveal" style="transition-delay:160ms">
                         <h3>Что получается на выходе</h3>
                         <p>Графические проекты на основе функций: симметрия, преобразования, композиция, сюжет.</p>
                     </div>
-                    <div class="mini">
+                    <div class="mini reveal" style="transition-delay:200ms">
                         <h3>Что это развивает</h3>
                         <p>Критическое мышление, творческое конструирование, уверенность в решениях, аргументацию.</p>
                     </div>
@@ -563,151 +786,31 @@
         </div>
     </section>
 
-    <!-- 2) MATERIALS -->
+    <!-- 2) VIDEOS -->
     <section id="materials">
         <div class="container">
-            <div class="section-head">
+            <div class="section-head reveal">
                 <div>
-                    <h2>Учебные материалы и методика</h2>
-                    <p>Набор готовых блоков, которые удобно использовать на уроках: от разогрева до финального проекта и защиты.</p>
+                    <h2>Видеоматериалы для изучения Desmos</h2>
+                    <p>Подборка роликов: старт, создание графиков, оформление и цветовые настройки.</p>
                 </div>
             </div>
 
-            <div class="grid-3">
-                <div class="material">
-                    <div class="top">
-                        <span class="label">Старт</span>
-                        <div class="icon" aria-hidden="true" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M12 2l3 7 7 .6-5.4 4.6 1.8 7-6.4-3.9-6.4 3.9 1.8-7L2 9.6 9 9l3-7z"
-                                      stroke="rgba(202,162,75,.9)" stroke-width="1.4" fill="rgba(202,162,75,.12)"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Мини-уроки по графикам</h3>
-                    <ul>
-                        <li>Линейные функции: k, b, пересечения</li>
-                        <li>Сдвиги, масштабирование, отражения</li>
-                        <li>Ограничения области и кусочные функции</li>
-                    </ul>
-                    <div class="art" aria-hidden="true">
-                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
-                            <rect width="720" height="120" fill="rgba(255,255,255,.0)"/>
-                            <path d="M30 90 C 120 20, 240 20, 330 90 S 540 160, 690 60"
-                                  fill="none" stroke="rgba(43,116,182,.75)" stroke-width="4" stroke-linecap="round"/>
-                            <path d="M30 90 L 690 30" fill="none" stroke="rgba(202,162,75,.75)" stroke-width="4" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="material">
-                    <div class="top">
-                        <span class="label">Практика</span>
-                        <div class="icon" aria-hidden="true" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M4 19h16" stroke="rgba(15,42,61,.85)" stroke-width="1.8" stroke-linecap="round"/>
-                                <path d="M6 15l4-4 3 3 5-7" stroke="rgba(43,116,182,.8)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Карточки заданий (STEAM)</h3>
-                    <ul>
-                        <li>Тренажёры параметров (k, b, a, c)</li>
-                        <li>Симметрия и орнаменты</li>
-                        <li>Сюжеты: “город”, “природа”, “будущее”</li>
-                    </ul>
-                    <div class="art" aria-hidden="true">
-                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
-                            <defs>
-                                <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
-                                    <path d="M0 20H40M20 0V40" stroke="rgba(15,42,61,.16)"/>
-                                    <circle cx="20" cy="20" r="6" fill="rgba(202,162,75,.22)"/>
-                                </pattern>
-                            </defs>
-                            <rect width="720" height="120" fill="url(#p)"/>
-                            <path d="M80 95 Q 180 20 280 95 T 480 95 T 680 95"
-                                  fill="none" stroke="rgba(43,116,182,.85)" stroke-width="4" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="material">
-                    <div class="top">
-                        <span class="label">Финал</span>
-                        <div class="icon" aria-hidden="true" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none">
-                                <path d="M6 7h12" stroke="rgba(15,42,61,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                                <path d="M7 12h10" stroke="rgba(15,42,61,.55)" stroke-width="1.8" stroke-linecap="round"/>
-                                <path d="M6 17h12" stroke="rgba(15,42,61,.75)" stroke-width="1.8" stroke-linecap="round"/>
-                                <path d="M16 3l2 2-6 6-2 .5.5-2 6-6z"
-                                      stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linejoin="round" fill="rgba(202,162,75,.12)"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <h3>Проект + рубрика оценивания</h3>
-                    <ul>
-                        <li>Критерии: математика, точность, композиция</li>
-                        <li>Пояснительная записка к работе</li>
-                        <li>Защита: аргументация и демонстрация</li>
-                    </ul>
-                    <div class="art" aria-hidden="true">
-                        <svg viewBox="0 0 720 120" preserveAspectRatio="none">
-                            <rect width="720" height="120" fill="rgba(255,255,255,.0)"/>
-                            <g opacity=".9">
-                                <rect x="40" y="18" width="200" height="18" rx="9" fill="rgba(43,116,182,.25)"/>
-                                <rect x="40" y="46" width="320" height="18" rx="9" fill="rgba(202,162,75,.26)"/>
-                                <rect x="40" y="74" width="260" height="18" rx="9" fill="rgba(43,116,182,.18)"/>
-                            </g>
-                            <path d="M520 90l32-32 20 20 64-64" stroke="rgba(15,42,61,.75)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-<!--            <div class="section-head" style="margin-top:18px;">-->
-<!--                <div>-->
-<!--                    <h2>Короткая структура занятия</h2>-->
-<!--                    <p>Удобный шаблон: быстро стартуем, затем исследуем, и фиксируем результат в мини-проекте.</p>-->
-<!--                </div>-->
-<!--            </div>-->
-
-<!--            <div class="grid-2">-->
-<!--                <div class="card box">-->
-<!--                    <div class="icon" aria-hidden="true">-->
-<!--                        <svg viewBox="0 0 24 24" fill="none">-->
-<!--                            <path d="M12 3v18" stroke="rgba(202,162,75,.9)" stroke-width="1.8" stroke-linecap="round"/>-->
-<!--                            <path d="M4 12h16" stroke="rgba(15,42,61,.8)" stroke-width="1.8" stroke-linecap="round"/>-->
-<!--                            <path d="M6 7c2.2 2.8 7.8 2.8 10 0" stroke="rgba(43,116,182,.8)" stroke-width="1.8" stroke-linecap="round"/>-->
-<!--                        </svg>-->
-<!--                    </div>-->
-<!--                    <h3>Разогрев (5–8 минут)</h3>-->
-<!--                    <p>Короткая демонстрация: “что меняется, если…”, затем 2–3 быстрых вопроса по наблюдениям.</p>-->
-<!--                </div>-->
-<!--                <div class="card box">-->
-<!--                    <div class="icon" aria-hidden="true">-->
-<!--                        <svg viewBox="0 0 24 24" fill="none">-->
-<!--                            <path d="M4 17c4-8 12-8 16 0" stroke="rgba(43,116,182,.85)" stroke-width="1.8" stroke-linecap="round"/>-->
-<!--                            <path d="M7 14l3-3 2 2 5-6" stroke="rgba(202,162,75,.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>-->
-<!--                        </svg>-->
-<!--                    </div>-->
-<!--                    <h3>Исследование + мини-проект (25–35 минут)</h3>-->
-<!--                    <p>Ученики строят элементы и доводят до композиции: параметры, ограничения, симметрия, финальная презентация.</p>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="grid-3" id="videoGrid"></div>
         </div>
     </section>
 
     <!-- 3) GALLERY -->
     <section id="works">
         <div class="container">
-            <div class="section-head">
+            <div class="section-head reveal">
                 <div>
                     <h2>Галерея работ учеников (Desmos)</h2>
-                    <p>Поиск и фильтры по ученику, классу и группе. Работы открываются и подсвечиваются как портфолио.</p>
+                    <p>Поиск и фильтры по ученику, классу и группе. Работы оптимизированы: графики подгружаются при прокрутке.</p>
                 </div>
             </div>
 
-            <div class="card gallery">
+            <div class="card hover gallery reveal">
                 <div class="toolbar">
                     <div class="filters">
                         <div class="input" title="Поиск по ученику, классу или номеру">
@@ -735,8 +838,9 @@
                         </select>
                     </div>
 
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <button class="btn" id="reset">Сброс</button>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <button class="btn" id="reset" type="button">Сброс</button>
+                        <button class="btn primary" id="openSubmit" type="button">Отправить работу</button>
                         <div style="color:var(--muted); font-size:12px;">
                             Показано: <b id="count">0</b>
                         </div>
@@ -752,84 +856,57 @@
 <!-- 4) CONTACTS -->
 <footer id="contact">
     <div class="container">
-        <div class="section-head">
+        <div class="section-head reveal">
             <div>
-                <h2>Контактная информация</h2>
-                <p>Нажмите на поля справа, чтобы скопировать данные.</p>
+                <h2>Контакты</h2>
+                <p>Нажмите на строку, чтобы скопировать.</p>
             </div>
         </div>
 
         <div class="contact">
-            <div class="left">
-                <h3>Автор проекта</h3>
+            <div class="left reveal">
+                <h3>О проекте</h3>
                 <p>
-                    STEAM и Desmos: модель развития исследовательских и творческих навыков учащихся 7–12 классов
-                    через визуализацию, параметризацию и проектную работу.
+                    STEAM и Desmos: развитие исследовательских и творческих навыков учащихся через визуализацию,
+                    параметризацию и проектную работу. Галерея показывает реальные ученические проекты.
                 </p>
+                <div class="footnote">© STEAM × Desmos</div>
+            </div>
 
-                <div class="list">
-                    <div class="item">
-                        <div class="icon" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M12 3l8 6v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9l8-6z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
-                                <path d="M9 21V12h6v9" stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <b>Учреждение</b>
-                            <span>Назарбаев Интеллектуальная школа физико-математического направления, г. Усть-Каменогорск</span>
-                        </div>
+            <div class="right reveal">
+                <div class="author">
+                    <div class="avatar" aria-hidden="true">
+                        <img src="assets/author.svg" alt="Фото автора" loading="lazy">
+                    </div>
+                    <div>
+                        <div class="author-name">Раисова Бакытгуль Токтасыновна</div>
+                        <div class="author-sub">Назарбаев Интеллектуальная школа ФМН, г. Усть-Каменогорск</div>
                     </div>
                 </div>
 
-                <div class="footnote">© STEAM × Desmos. Одностраничный сайт (single-file).</div>
-            </div>
+                <div class="contact-lines">
+                    <div class="line" data-copy="raissova_b@ukk.nis.edu.kz" role="button" tabindex="0">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M4 6h16v12H4z" stroke="rgba(15,42,61,.78)" stroke-width="1.6"/>
+                            <path d="M4 7l8 6 8-6" stroke="rgba(43,116,182,.85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>raissova_b@ukk.nis.edu.kz</span>
+                    </div>
 
-            <div class="right">
-                <h3>Связаться</h3>
+                    <div class="line" data-copy="+7 777 293 6105" role="button" tabindex="0">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M6.5 3.5l3 2-1.5 3c1.2 2.4 3.1 4.3 5.5 5.5l3-1.5 2 3c.4.6.2 1.4-.4 1.8-1.6 1-3.6 1.2-5.4.6-4.8-1.6-8.8-5.6-10.4-10.4-.6-1.8-.4-3.8.6-5.4.4-.6 1.2-.8 1.8-.4z"
+                                  stroke="rgba(15,42,61,.78)" stroke-width="1.6" stroke-linejoin="round"/>
+                        </svg>
+                        <span>+7 777 293 6105</span>
+                    </div>
 
-                <div class="list">
-                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="Раисова Бакытгуль Токтасиновна">
-                        <div class="icon" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
-                                <path d="M4 21a8 8 0 0 1 16 0" stroke="rgba(202,162,75,.9)" stroke-width="1.6" stroke-linecap="round"/>
-                            </svg>
-                        </div>
-                        <div style="text-align:left;">
-                            <b>Имя</b>
-                            <span>Раисова Бакытгуль Токтасиновна</span>
-                        </div>
-                    </button>
-
-                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="raissova_b@ukk.nis.edu.kz">
-                        <div class="icon" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M4 6h16v12H4z" stroke="rgba(15,42,61,.8)" stroke-width="1.6"/>
-                                <path d="M4 7l8 6 8-6" stroke="rgba(43,116,182,.85)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div style="text-align:left;">
-                            <b>Email</b>
-                            <span>raissova_b@ukk.nis.edu.kz</span>
-                        </div>
-                    </button>
-
-                    <button class="item btn" style="width:100%; justify-content:flex-start; background: rgba(255,255,255,.78);" data-copy="+7 777 293 6105">
-                        <div class="icon" style="margin:0;">
-                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                <path d="M6.5 3.5l3 2-1.5 3c1.2 2.4 3.1 4.3 5.5 5.5l3-1.5 2 3c.4.6.2 1.4-.4 1.8-1.6 1-3.6 1.2-5.4.6-4.8-1.6-8.8-5.6-10.4-10.4-.6-1.8-.4-3.8.6-5.4.4-.6 1.2-.8 1.8-.4z"
-                                      stroke="rgba(15,42,61,.8)" stroke-width="1.6" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div style="text-align:left;">
-                            <b>Телефон</b>
-                            <span>+7 777 293 6105</span>
-                        </div>
+                    <button class="btn primary" id="openSubmitContact" type="button" style="width:100%; justify-content:center;">
+                        Отправить работу
                     </button>
                 </div>
 
-                <div class="footnote" id="copyHint">После клика значение копируется в буфер обмена.</div>
+                <div class="footnote">Текст для отправки сформируется автоматически (WhatsApp или Email).</div>
             </div>
         </div>
     </div>
@@ -837,113 +914,404 @@
 
 <a class="btn to-top" id="toTop" href="#top" aria-label="Наверх">Наверх</a>
 
-<script>
-    // --------------------------
-    // Data (ученические работы)
-    // --------------------------
-    const STUDENT_WORKS = [
-        {
-            n: 1,
-            url: "https://www.desmos.com/calculator/vxq5sxkp4c",
-            name: "Зекенова Еркежан",
-            classLabel: "8М",
-            group: "2",
-            title: "Симметричный узор на координатной плоскости",
-            desc: "Построение узора с помощью линейных функций y=kx+b и y=√x. Симметрия получена отражением относительно оси y."
-        },
-        { n: 2, url: "https://www.desmos.com/calculator/mjhmodjwnl?lang=ru", name: "Мырзахан Жансұлтан", classLabel: "9Н", group: "2", title: "Графическая композиция", desc: "Исследование графиков и композиции с использованием преобразований." },
-        { n: 3, url: "https://www.desmos.com/calculator/bjuxwq61ha", name: "Тоқанова Ақерке", classLabel: "9Н", group: "3", title: "График-арт", desc: "Композиция на основе функций и симметрий." },
-        { n: 4, url: "https://www.desmos.com/calculator/m1dqbiegq6?lang=ru", name: "Ануарбекқызы Айман", classLabel: "9Н", group: "3", title: "Графический рисунок", desc: "Комбинация кривых и прямых, настройка параметров для формы." },
-        { n: 5, url: "https://www.desmos.com/calculator/nt2rjkzgds?lang=ru", name: "Бекжан", classLabel: "8В", group: "1", title: "Композиция в Desmos", desc: "Построение рисунка через систему функций и ограничений области." },
-        { n: 6, url: "https://www.desmos.com/calculator/anadssv9fd?lang=ru", name: "Қалибекұлы Төрежан", classLabel: "12А", group: "1", title: "Сложная модель", desc: "Продвинутая композиция: точность, детализация, управление параметрами." },
-        { n: 7, url: "https://www.desmos.com/calculator/shpfjmfcz4", name: "Қуанбай Нұрхан", classLabel: "9Н", group: "1", title: "Графическая работа", desc: "Композиция с преобразованиями и симметрией." },
-        { n: 8, url: "https://www.desmos.com/calculator/41zbtimqaj?lang=ru", name: "Сахариянов Мансұр", classLabel: "8А", group: "3", title: "График и сюжет", desc: "Сочетание элементов через функции и ограничения области." },
-        { n: 9, url: "https://www.desmos.com/calculator/4ey2dgwg97?lang=ru", name: "Сахов Амирхан", classLabel: "9N", group: "2", title: "График без названия", desc: "Композиция на основе функций и преобразований." },
-        { n: 10, url: "https://www.desmos.com/calculator/lpe4ibbwak?lang=ru", name: "Бақберген Сырым", classLabel: "11Н", group: "", title: "Проект (11 класс)", desc: "Работа с преобразованиями и детализацией графиков." },
-        { n: 11, url: "https://www.desmos.com/calculator/b5ypte30cd?lang=ru", name: "Даутқазы Надия", classLabel: "11Н", group: "", title: "Проект (11 класс)", desc: "Композиция на основе функций с акцентом на форму и симметрию." },
-        { n: 12, url: "https://www.desmos.com/calculator/wvboin0t0u?lang=ru", name: "Бақытжан Дінмұхамед", classLabel: "10G", group: "", title: "Проект (10 класс)", desc: "Сюжетная визуализация: подбор функций и параметров для образа." },
-    ];
+<!-- Submit modal -->
+<div class="modal" id="submitModal" role="dialog" aria-modal="true" aria-labelledby="submitTitle">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3 id="submitTitle">Отправить работу (Desmos)</h3>
+            <button class="btn" id="closeModal" type="button">Закрыть</button>
+        </div>
 
-    // --------------------------
-    // Helpers
-    // --------------------------
+        <div class="modal-body">
+            <div class="field">
+                <label for="sName">Имя и фамилия ученика</label>
+                <input id="sName" type="text" placeholder="Например: Зекенова Еркежан" />
+            </div>
+
+            <div class="field">
+                <label for="sClass">Класс</label>
+                <input id="sClass" type="text" placeholder="Например: 9Н" />
+            </div>
+
+            <div class="field">
+                <label for="sGroup">Группа (если есть)</label>
+                <input id="sGroup" type="text" placeholder="Например: 2" />
+            </div>
+
+            <div class="field">
+                <label for="sLink">Ссылка Desmos</label>
+                <input id="sLink" type="url" placeholder="https://www.desmos.com/calculator/..." />
+            </div>
+
+            <div class="field" style="grid-column: 1 / -1;">
+                <label for="sDesc">Краткое описание (по желанию)</label>
+                <textarea id="sDesc" placeholder="Коротко: какие функции использованы, симметрия, идея работы и т.д."></textarea>
+            </div>
+        </div>
+
+        <div class="hint" id="submitHint"></div>
+
+        <div class="modal-foot">
+            <button class="btn" id="copyText" type="button">Скопировать текст</button>
+            <button class="btn" id="sendEmail" type="button">Email</button>
+            <button class="btn primary" id="sendWhatsApp" type="button">WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fallback JSON -->
+<script id="studentsData" type="application/json">[]</script>
+<script id="videosData" type="application/json">[]</script>
+
+<script>
+    const CONFIG = {
+        whatsappPhone: "77772936105",
+        email: "raissova_b@ukk.nis.edu.kz"
+    };
+
     const el = (tag, attrs={}, children=[]) => {
         const node = document.createElement(tag);
         for (const [k,v] of Object.entries(attrs)){
             if (k === "class") node.className = v;
             else if (k === "html") node.innerHTML = v;
-            else if (k.startsWith("on") && typeof v === "function") node.addEventListener(k.slice(2), v);
             else node.setAttribute(k, v);
         }
         for (const c of children) node.appendChild(typeof c === "string" ? document.createTextNode(c) : c);
         return node;
     };
 
-    const normalizeEmbed = (url) => {
+    const toast = (() => {
+        let timer;
+        return (msg) => {
+            let t = document.getElementById("toast");
+            if (!t){
+                t = document.createElement("div");
+                t.id = "toast";
+                t.style.position = "fixed";
+                t.style.left = "16px";
+                t.style.bottom = "16px";
+                t.style.padding = "10px 12px";
+                t.style.borderRadius = "14px";
+                t.style.border = "1px solid rgba(15,42,61,.14)";
+                t.style.background = "rgba(255,255,255,.92)";
+                t.style.boxShadow = "0 12px 34px rgba(15,42,61,.12)";
+                t.style.color = "rgba(15,42,61,.86)";
+                t.style.fontSize = "13px";
+                t.style.zIndex = "2000";
+                document.body.appendChild(t);
+            }
+            t.textContent = msg;
+            t.style.opacity = "1";
+            clearTimeout(timer);
+            timer = setTimeout(() => { t.style.opacity = "0"; }, 1600);
+        };
+    })();
+
+    async function loadJson(url, fallbackScriptId){
+        try{
+            const r = await fetch(url, { cache: "no-store" });
+            if (!r.ok) throw new Error("HTTP " + r.status);
+            return await r.json();
+        }catch(e){
+            const s = document.getElementById(fallbackScriptId);
+            if (s && s.textContent.trim()){
+                try { return JSON.parse(s.textContent); } catch(_) {}
+            }
+            return [];
+        }
+    }
+
+    function parseGrade(classLabel){
+        const m = String(classLabel || "").match(/^(\d{1,2})/);
+        return m ? m[1] : "";
+    }
+
+    function normalizeDesmosEmbed(url){
         if (!url) return "";
         try{
             const u = new URL(url);
-            const path = u.pathname.toLowerCase().includes("/calculator/")
+            const p = u.pathname.toLowerCase().includes("/calculator/")
                 ? u.pathname
                 : u.pathname.replace("/Calculator/", "/calculator/");
-            const id = path.split("/").filter(Boolean).pop();
+            const id = p.split("/").filter(Boolean).pop();
             const lang = u.searchParams.get("lang") || "ru";
             return `https://www.desmos.com/calculator/${id}?embed&lang=${encodeURIComponent(lang)}`;
         }catch(e){
             return url;
         }
-    };
+    }
 
-    const parseGrade = (classLabel) => {
-        const m = String(classLabel || "").match(/^(\d{1,2})/);
-        return m ? m[1] : "";
-    };
+    function ytId(url){
+        try{
+            const u = new URL(url);
+            if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "");
+            if (u.searchParams.get("v")) return u.searchParams.get("v");
+            const m = u.pathname.match(/\/embed\/([^\/]+)/);
+            return m ? m[1] : "";
+        }catch(e){
+            return "";
+        }
+    }
+    function ytThumb(id){ return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : ""; }
+    function ytEmbedUrl(id){ return id ? `https://www.youtube-nocookie.com/embed/${id}` : ""; }
 
-    // --------------------------
-    // Render works
-    // --------------------------
-    const grid = document.getElementById("workGrid");
-    const count = document.getElementById("count");
+    async function copyText(text){
+        try{
+            await navigator.clipboard.writeText(text);
+            toast("Скопировано.");
+        }catch(e){
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            ta.remove();
+            toast("Скопировано.");
+        }
+    }
+
+    function hookCopyLines(){
+        document.querySelectorAll("[data-copy]").forEach(node => {
+            if (node.__copyHooked) return;
+            node.__copyHooked = true;
+            const handler = () => copyText(node.getAttribute("data-copy") || "");
+            node.addEventListener("click", handler);
+            node.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); }
+            });
+        });
+    }
+
+    /* Reveal on scroll */
+    function setupReveal(){
+        const items = Array.from(document.querySelectorAll(".reveal"));
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting){
+                    e.target.classList.add("in");
+                    io.unobserve(e.target);
+                }
+            });
+        }, { root: null, threshold: 0.12, rootMargin: "80px 0px -40px 0px" });
+
+        items.forEach((node, idx) => {
+            if (!node.style.transitionDelay && node.closest(".stagger") == null){
+                node.style.transitionDelay = Math.min(idx * 30, 180) + "ms";
+            }
+            io.observe(node);
+        });
+    }
+
+    /* Modal */
+    function openModal(){
+        const m = document.getElementById("submitModal");
+        m.classList.add("open");
+        document.getElementById("sName").focus();
+        updateSubmitHint();
+    }
+    function closeModal(){
+        document.getElementById("submitModal").classList.remove("open");
+    }
+
+    function buildSubmitText(){
+        const name = (document.getElementById("sName").value || "").trim();
+        const cls = (document.getElementById("sClass").value || "").trim();
+        const grp = (document.getElementById("sGroup").value || "").trim();
+        const link = (document.getElementById("sLink").value || "").trim();
+        const desc = (document.getElementById("sDesc").value || "").trim();
+
+        const parts = [];
+        parts.push("Здравствуйте! Отправляю работу в Desmos.");
+        if (name) parts.push(`Имя: ${name}`);
+        if (cls) parts.push(`Класс: ${cls}`);
+        if (grp) parts.push(`Группа: ${grp}`);
+        if (link) parts.push(`Ссылка: ${link}`);
+        if (desc) parts.push(`Описание: ${desc}`);
+        return parts.join("\n");
+    }
+
+    function updateSubmitHint(){
+        const name = (document.getElementById("sName").value || "").trim();
+        const link = (document.getElementById("sLink").value || "").trim();
+        const ok = name && link;
+        document.getElementById("submitHint").textContent = ok
+            ? "Готово: можно отправлять через WhatsApp или Email."
+            : "Заполните минимум: имя ученика и ссылка Desmos.";
+        return ok;
+    }
+
+    function sendWhatsApp(){
+        if (!updateSubmitHint()) { toast("Заполните имя и ссылку."); return; }
+        const text = buildSubmitText();
+        const url = `https://wa.me/${CONFIG.whatsappPhone}?text=${encodeURIComponent(text)}`;
+        window.open(url, "_blank", "noopener");
+    }
+
+    function sendEmail(){
+        if (!updateSubmitHint()) { toast("Заполните имя и ссылку."); return; }
+        const body = buildSubmitText();
+        const subject = "Работа Desmos";
+        const url = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        window.location.href = url;
+    }
+
+    async function copySubmitText(){
+        await copyText(buildSubmitText());
+    }
+
+    /* Render videos */
+    function renderVideos(list){
+        const grid = document.getElementById("videoGrid");
+        grid.innerHTML = "";
+
+        for (const v of list){
+            const id = ytId(v.url);
+            const thumbUrl = ytThumb(id);
+            const embed = ytEmbedUrl(id);
+
+            const headLeft = el("div", {}, [
+                el("h3", { class:"video-title" }, [v.title || "Видео"]),
+                el("div", { class:"video-meta" }, [
+                    el("span", { class:"pill" }, ["YouTube"]),
+                    v.level ? el("span", { class:"pill" }, [String(v.level)]) : el("span", { class:"pill" }, ["Desmos"])
+                ])
+            ]);
+
+            const headRight = el("div", { style:"display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;" }, [
+                el("a", { class:"btn", href: v.url, target:"_blank", rel:"noopener" }, ["Открыть"]),
+                el("button", { class:"btn", "data-copy": v.url, type:"button" }, ["Копировать"])
+            ]);
+
+            const thumb = el("div", { class:"thumb", role:"button", tabindex:"0", "aria-label":"Воспроизвести видео" }, [
+                el("div", { class:"play" }, [
+                    el("div", { class:"play-btn" }, [
+                        el("svg", { viewBox:"0 0 24 24", fill:"none" }, [
+                            el("path", { d:"M10 8l7 4-7 4V8z", fill:"rgba(255,255,255,.92)" }, [])
+                        ])
+                    ])
+                ])
+            ]);
+
+            if (thumbUrl) thumb.style.backgroundImage = `url('${thumbUrl}')`;
+
+            const playVideo = () => {
+                if (!embed) return;
+                thumb.replaceWith(el("iframe", {
+                    class:"yt-frame",
+                    src: embed,
+                    title: v.title || "YouTube video",
+                    loading:"lazy",
+                    allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+                    allowfullscreen: "true"
+                }));
+            };
+
+            thumb.addEventListener("click", playVideo);
+            thumb.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); playVideo(); }
+            });
+
+            const card = el("article", { class:"video-card reveal" }, [
+                el("div", { class:"video-head" }, [headLeft, headRight]),
+                el("div", { class:"video-body" }, [thumb])
+            ]);
+
+            grid.appendChild(card);
+        }
+
+        hookCopyLines();
+    }
+
+    /* Render works (Desmos) with lazy loading */
+    let desmosObserver = null;
+
+    function loadDesmosFrame(iframe, placeholder){
+        if (iframe.dataset.loaded === "1") return;
+        const src = iframe.getAttribute("data-src");
+        if (!src) return;
+        iframe.dataset.loaded = "1";
+        iframe.src = src;
+        iframe.addEventListener("load", () => {
+            if (placeholder) placeholder.remove();
+        }, { once:true });
+    }
+
+    function ensureDesmosObserver(){
+        if (desmosObserver) return desmosObserver;
+        desmosObserver = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (!e.isIntersecting) return;
+                const iframe = e.target;
+                const ph = iframe.closest(".frame")?.querySelector(".frame-placeholder");
+                loadDesmosFrame(iframe, ph);
+                desmosObserver.unobserve(iframe);
+            });
+        }, { root: null, threshold: 0.12, rootMargin: "500px 0px 500px 0px" });
+        return desmosObserver;
+    }
 
     function renderWorks(list){
+        const grid = document.getElementById("workGrid");
+        const count = document.getElementById("count");
         grid.innerHTML = "";
         count.textContent = String(list.length);
 
-        for (const w of list){
-            const grade = parseGrade(w.classLabel);
-            const embed = normalizeEmbed(w.url);
+        const io = ensureDesmosObserver();
 
-            const title = el("div", {}, [
+        list.forEach((w, idx) => {
+            const grade = parseGrade(w.classLabel);
+            const embed = normalizeDesmosEmbed(w.url);
+
+            const left = el("div", {}, [
                 el("h3", {}, [`№${w.n}. ${w.name}`]),
                 el("div", { class:"meta" }, [
                     el("span", { class:"pill" }, [`Класс: ${w.classLabel || "—"}`]),
                     el("span", { class:"pill" }, [`Группа: ${w.group || "—"}`]),
-                    el("span", { class:"pill" }, [`Уровень: ${grade ? grade+" класс" : "—"}`]),
-                ]),
+                    el("span", { class:"pill" }, [`Уровень: ${grade ? grade + " класс" : "—"}`]),
+                ])
             ]);
 
             const actions = el("div", { class:"work-actions" }, [
-                el("a", { class:"btn", href: w.url, target: "_blank", rel:"noopener", title: "Открыть в Desmos" }, [ "Открыть" ]),
-                el("button", { class:"btn", "data-copy": w.url, title:"Скопировать ссылку" }, [ "Копировать" ]),
+                el("a", { class:"btn", href: w.url, target:"_blank", rel:"noopener" }, ["Открыть"]),
+                el("button", { class:"btn", "data-copy": w.url, type:"button" }, ["Копировать"])
             ]);
 
-            const frame = el("div", { class:"frame" }, [
-                el("iframe", {
-                    title: `${w.name} — работа №${w.n}`,
-                    loading: "lazy",
-                    referrerpolicy: "no-referrer-when-downgrade",
-                    allowfullscreen: "true",
-                    src: embed
-                })
+            const iframe = el("iframe", {
+                class:"desmos",
+                title: `${w.name} — работа №${w.n}`,
+                loading:"lazy",
+                referrerpolicy:"no-referrer-when-downgrade",
+                allowfullscreen:"true",
+                src:"about:blank",
+                "data-src": embed
+            });
+
+            const placeholder = el("div", { class:"frame-placeholder" }, [
+                el("div", { class:"ph-inner" }, [
+                    el("div", { class:"ph-title" }, ["График Desmos"]),
+                    el("div", { class:"ph-sub" }, ["Загрузится автоматически при прокрутке или по кнопке."]),
+                    el("button", { class:"btn primary", type:"button" }, ["Загрузить"])
+                ])
             ]);
+
+            placeholder.querySelector("button").addEventListener("click", () => loadDesmosFrame(iframe, placeholder));
+
+            const frame = el("div", { class:"frame" }, [iframe, placeholder]);
+
+            // First 1–2: load immediately (приятнее UX)
+            if (idx < 2){
+                loadDesmosFrame(iframe, placeholder);
+            }else{
+                io.observe(iframe);
+            }
 
             const work = el("article", {
-                class:"work",
+                class:"work reveal",
                 "data-grade": grade,
                 "data-group": w.group || "",
-                "data-search": `${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title}`.toLowerCase()
+                "data-search": `${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase()
             }, [
-                el("div", { class:"work-head" }, [ title, actions ]),
+                el("div", { class:"work-head" }, [left, actions]),
                 el("div", { class:"work-body" }, [
                     el("div", { style:"font-weight:650; font-size:13px;" }, [w.title || "Работа"]),
                     el("div", { class:"desc" }, [w.desc || ""]),
@@ -952,112 +1320,82 @@
             ]);
 
             grid.appendChild(work);
-        }
+        });
 
-        hookCopyButtons();
+        hookCopyLines();
     }
 
-    // --------------------------
-    // Filtering
-    // --------------------------
-    const q = document.getElementById("q");
-    const gradeSel = document.getElementById("grade");
-    const groupSel = document.getElementById("group");
-    const resetBtn = document.getElementById("reset");
+    let STUDENT_WORKS = [];
+    let VIDEO_MATERIALS = [];
 
     function applyFilters(){
-        const query = (q.value || "").trim().toLowerCase();
-        const grade = gradeSel.value;
-        const group = groupSel.value;
+        const q = (document.getElementById("q").value || "").trim().toLowerCase();
+        const grade = document.getElementById("grade").value;
+        const group = document.getElementById("group").value;
 
         const filtered = STUDENT_WORKS.filter(w => {
             const g = parseGrade(w.classLabel);
-            const inQ = !query || (`${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase().includes(query));
+            const inQ = !q || (`${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase().includes(q));
             const inGrade = !grade || g === grade;
             const inGroup = !group || String(w.group || "") === String(group);
             return inQ && inGrade && inGroup;
         });
 
         renderWorks(filtered);
+        setupReveal(); // новые карточки тоже анимируем
     }
 
-    q.addEventListener("input", applyFilters);
-    gradeSel.addEventListener("change", applyFilters);
-    groupSel.addEventListener("change", applyFilters);
-    resetBtn.addEventListener("click", () => {
-        q.value = "";
-        gradeSel.value = "";
-        groupSel.value = "";
-        applyFilters();
-    });
+    (async function init(){
+        STUDENT_WORKS = await loadJson("students.json", "studentsData");
+        VIDEO_MATERIALS = await loadJson("videos.json", "videosData");
 
-    // --------------------------
-    // Copy
-    // --------------------------
-    function hookCopyButtons(){
-        document.querySelectorAll("[data-copy]").forEach(btn => {
-            btn.addEventListener("click", async () => {
-                const text = btn.getAttribute("data-copy") || "";
-                try{
-                    await navigator.clipboard.writeText(text);
-                    toast("Скопировано в буфер обмена.");
-                }catch(e){
-                    const ta = document.createElement("textarea");
-                    ta.value = text;
-                    document.body.appendChild(ta);
-                    ta.select();
-                    document.execCommand("copy");
-                    ta.remove();
-                    toast("Скопировано.");
-                }
-            }, { once:true });
+        renderVideos(VIDEO_MATERIALS);
+        renderWorks(STUDENT_WORKS);
+
+        document.getElementById("q").addEventListener("input", applyFilters);
+        document.getElementById("grade").addEventListener("change", applyFilters);
+        document.getElementById("group").addEventListener("change", applyFilters);
+        document.getElementById("reset").addEventListener("click", () => {
+            document.getElementById("q").value = "";
+            document.getElementById("grade").value = "";
+            document.getElementById("group").value = "";
+            applyFilters();
         });
-    }
 
-    let toastTimer;
-    function toast(msg){
-        let t = document.getElementById("toast");
-        if (!t){
-            t = document.createElement("div");
-            t.id = "toast";
-            t.style.position = "fixed";
-            t.style.left = "16px";
-            t.style.bottom = "16px";
-            t.style.padding = "10px 12px";
-            t.style.borderRadius = "14px";
-            t.style.border = "1px solid rgba(15,42,61,.14)";
-            t.style.background = "rgba(255,255,255,.92)";
-            t.style.boxShadow = "0 12px 34px rgba(15,42,61,.12)";
-            t.style.color = "rgba(15,42,61,.86)";
-            t.style.fontSize = "13px";
-            t.style.zIndex = "999";
-            document.body.appendChild(t);
-        }
-        t.textContent = msg;
-        t.style.opacity = "1";
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => { t.style.opacity = "0"; }, 1600);
-    }
+        document.getElementById("openSubmit").addEventListener("click", openModal);
+        document.getElementById("openSubmitTop").addEventListener("click", openModal);
+        document.getElementById("openSubmitContact").addEventListener("click", openModal);
 
-    // --------------------------
-    // Mobile nav
-    // --------------------------
-    const burger = document.getElementById("burger");
-    const mobileNav = document.getElementById("mobileNav");
-    burger?.addEventListener("click", () => mobileNav.classList.toggle("open"));
-    mobileNav?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileNav.classList.remove("open")));
+        document.getElementById("closeModal").addEventListener("click", closeModal);
+        document.getElementById("submitModal").addEventListener("click", (e) => {
+            if (e.target.id === "submitModal") closeModal();
+        });
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") closeModal();
+        });
 
-    // --------------------------
-    // Back to top
-    // --------------------------
-    const toTop = document.getElementById("toTop");
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 600) toTop.classList.add("show");
-        else toTop.classList.remove("show");
-    });
+        ["sName","sClass","sGroup","sLink","sDesc"].forEach(id => {
+            document.getElementById(id).addEventListener("input", updateSubmitHint);
+        });
 
-    // init
-    renderWorks(STUDENT_WORKS);
+        document.getElementById("sendWhatsApp").addEventListener("click", sendWhatsApp);
+        document.getElementById("sendEmail").addEventListener("click", sendEmail);
+        document.getElementById("copyText").addEventListener("click", copySubmitText);
+
+        const burger = document.getElementById("burger");
+        const mobileNav = document.getElementById("mobileNav");
+        burger?.addEventListener("click", () => mobileNav.classList.toggle("open"));
+        mobileNav?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileNav.classList.remove("open")));
+
+        const toTop = document.getElementById("toTop");
+        window.addEventListener("scroll", () => {
+            if (window.scrollY > 600) toTop.classList.add("show");
+            else toTop.classList.remove("show");
+        });
+
+        setupReveal();
+        hookCopyLines();
+    })();
 </script>
 </body>
 </html>
