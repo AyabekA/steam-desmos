@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>STEAM × Desmos — Математика как исследование</title>
-    <meta name="description" content="STEAM и Desmos: визуализация, исследование, творчество. Галерея работ учеников (Desmos) и видеоматериалы." />
+    <title>STEAM × Desmos — Math Mastery</title>
+    <meta name="description" content="STEAM и Desmos: визуализация, исследование, творчество. Работы учеников, видеоматериалы и презентации." />
+    <link rel="icon" href="assets/author.svg" type="image/svg+xml">
     <style>
         :root{
             --bg: #fbf7ef;
-            --paper: #ffffff;
             --ink: #0f2a3d;
             --muted: #5b6b77;
             --line: rgba(15,42,61,.12);
@@ -33,26 +33,18 @@
         a{ color:inherit; text-decoration:none; }
         .container{ max-width: var(--max); margin:0 auto; padding: 0 18px; }
 
-        /* Motion safety */
         @media (prefers-reduced-motion: reduce){
             html{ scroll-behavior:auto; }
             *{ animation:none !important; transition:none !important; }
         }
 
-        /* Reveal animation */
         .reveal{
             opacity: 0;
             transform: translateY(14px);
             transition: opacity .6s ease, transform .6s ease;
             will-change: opacity, transform;
         }
-        .reveal.in{
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .stagger > *{
-            transition-delay: var(--d, 0ms);
-        }
+        .reveal.in{ opacity: 1; transform: translateY(0); }
 
         header{
             position: sticky; top:0; z-index: 50;
@@ -119,10 +111,20 @@
             background: linear-gradient(145deg, rgba(43,116,182,.15), rgba(202,162,75,.16));
             border-color: rgba(15,42,61,.12);
         }
-        .btn.ghost{
-            background: rgba(255,255,255,.55);
-        }
+        .btn.ghost{ background: rgba(255,255,255,.55); }
         .burger{ display:none; }
+
+        /* Language switcher */
+        .lang{
+            border: 1px solid rgba(15,42,61,.14);
+            background: rgba(255,255,255,.72);
+            border-radius: 14px;
+            padding: 9px 10px;
+            font-size: 13px;
+            outline:none;
+            cursor:pointer;
+            box-shadow: 0 10px 26px rgba(15,42,61,.08);
+        }
 
         .mobile{ display:none; padding: 10px 0 14px; }
         .mobile.open{ display:block; }
@@ -149,7 +151,7 @@
             margin:0;
             color: var(--muted);
             font-size: 13px;
-            max-width: 68ch;
+            max-width: 72ch;
             line-height: 1.45;
         }
 
@@ -162,7 +164,7 @@
         }
         .card.hover:hover{ transform: translateY(-2px); box-shadow: 0 18px 52px rgba(15,42,61,.14); }
 
-        /* Block 1 (Info) */
+        /* HERO */
         .hero{ padding: 34px 0 10px; }
         .hero-grid{
             display:grid; gap: 18px;
@@ -204,7 +206,7 @@
             color: var(--muted);
             font-size: 15px;
             line-height: 1.55;
-            max-width: 60ch;
+            max-width: 62ch;
         }
         .hero-tags{
             display:flex; flex-wrap:wrap; gap:10px;
@@ -227,6 +229,7 @@
             gap: 12px;
         }
 
+        /* Double layer: image + Desmos grid overlay */
         .hero-media{
             border-radius: var(--radius2);
             border: 1px solid rgba(15,42,61,.12);
@@ -234,6 +237,7 @@
             background: rgba(255,255,255,.72);
             box-shadow: 0 12px 34px rgba(15,42,61,.10);
             position:relative;
+            isolation: isolate;
         }
         .hero-media img{
             width:100%;
@@ -241,6 +245,46 @@
             object-fit: cover;
             display:block;
             transform: scale(1.01);
+            filter: saturate(1.02) contrast(1.02);
+        }
+        /* Grid */
+        .hero-media::before{
+            content:"";
+            position:absolute; inset:0;
+            background-image:
+                    linear-gradient(to right, rgba(255,255,255,.22) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,.22) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: .32;
+            mix-blend-mode: overlay;
+            pointer-events:none;
+            z-index: 2;
+        }
+        /* Axes + subtle glow */
+        .hero-media::after{
+            content:"";
+            position:absolute; inset:0;
+            background-image:
+                    linear-gradient(to right,
+                    transparent 49.6%,
+                    rgba(255,255,255,.55) 50%,
+                    transparent 50.4%),
+                    linear-gradient(to bottom,
+                    transparent 49.6%,
+                    rgba(255,255,255,.55) 50%,
+                    transparent 50.4%);
+            opacity: .28;
+            filter: drop-shadow(0 0 10px rgba(43,116,182,.22));
+            pointer-events:none;
+            z-index: 3;
+        }
+        /* Vignette */
+        .hero-media .vignette{
+            position:absolute; inset:0;
+            background: radial-gradient(120% 120% at 50% 30%, rgba(0,0,0,.00), rgba(15,42,61,.22));
+            opacity: .22;
+            pointer-events:none;
+            z-index: 4;
         }
         .hero-media .badge{
             position:absolute;
@@ -248,12 +292,14 @@
             bottom: 12px;
             padding: 7px 10px;
             border-radius: 999px;
-            border: 1px solid rgba(255,255,255,.55);
-            background: rgba(15,42,61,.52);
+            border: 1px solid rgba(255,255,255,.50);
+            background: rgba(15,42,61,.50);
             color: rgba(255,255,255,.92);
             font-size: 12px;
             backdrop-filter: blur(6px);
+            z-index: 5;
         }
+        .hero-media .badge b{ font-weight: 700; }
         .hero-media .shine{
             position:absolute;
             inset:-40% -40% auto auto;
@@ -262,6 +308,7 @@
             background: radial-gradient(circle at 30% 30%, rgba(202,162,75,.35), transparent 60%);
             transform: rotate(20deg);
             pointer-events:none;
+            z-index: 1;
         }
 
         .mini{
@@ -382,7 +429,7 @@
             width: 100%;
             font-size: 13px;
         }
-        select{
+        select.ui{
             border: 1px solid rgba(15,42,61,.14);
             background: rgba(255,255,255,.78);
             padding: 10px 12px;
@@ -390,6 +437,7 @@
             font-size: 13px;
             outline:none;
         }
+
         .work-grid{
             display:grid; gap: 14px;
             grid-template-columns: repeat(2, 1fr);
@@ -479,6 +527,65 @@
             margin-bottom: 12px;
         }
 
+        /* Presentations */
+        .pres-grid{
+            display:grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        .pres-card{
+            border-radius: var(--radius2);
+            border: 1px solid rgba(15,42,61,.12);
+            background: rgba(255,255,255,.78);
+            box-shadow: 0 12px 34px rgba(15,42,61,.10);
+            overflow:hidden;
+            display:flex;
+            flex-direction:column;
+            transition: transform .20s ease, box-shadow .20s ease;
+        }
+        .pres-card:hover{ transform: translateY(-2px); box-shadow: 0 18px 52px rgba(15,42,61,.14); }
+        .pres-top{
+            padding: 14px;
+            display:flex;
+            gap: 12px;
+            align-items:flex-start;
+        }
+        .pdf-icon{
+            width: 42px; height: 42px;
+            border-radius: 16px;
+            border: 1px solid rgba(15,42,61,.12);
+            background: linear-gradient(145deg, rgba(43,116,182,.10), rgba(202,162,75,.12));
+            display:grid; place-items:center;
+            flex: 0 0 auto;
+        }
+        .pres-title{
+            margin:0;
+            font-size: 14px;
+            line-height: 1.25;
+            letter-spacing: .1px;
+        }
+        .pres-meta{
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 12px;
+            display:flex;
+            flex-wrap:wrap;
+            gap: 8px;
+        }
+        .pres-body{
+            padding: 0 14px 14px;
+            display:flex;
+            flex-direction:column;
+            gap: 10px;
+            flex: 1;
+        }
+        .pres-actions{
+            display:flex;
+            gap: 10px;
+            flex-wrap:wrap;
+            margin-top:auto;
+        }
+
         /* Contacts */
         footer{ padding: 22px 0 34px; }
         .contact{
@@ -517,23 +624,9 @@
             background: rgba(251,247,239,.85);
             flex: 0 0 auto;
         }
-        .avatar img{
-            width:100%;
-            height:100%;
-            object-fit: cover;
-            display:block;
-        }
-        .author-name{
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: .1px;
-            margin:0;
-        }
-        .author-sub{
-            margin-top: 4px;
-            color: rgba(15,42,61,.62);
-            font-size: 12px;
-        }
+        .avatar img{ width:100%; height:100%; object-fit: cover; display:block; }
+        .author-name{ font-size: 15px; font-weight: 800; margin:0; }
+        .author-sub{ margin-top: 4px; color: rgba(15,42,61,.62); font-size: 12px; }
 
         .contact-lines{
             display:grid;
@@ -553,11 +646,7 @@
         }
         .line:hover{ transform: translateY(-2px); box-shadow: 0 12px 28px rgba(15,42,61,.10); }
         .line svg{ width: 18px; height: 18px; flex: 0 0 auto; }
-        .line span{
-            font-size: 13px;
-            color: rgba(15,42,61,.86);
-            word-break: break-word;
-        }
+        .line span{ font-size: 13px; color: rgba(15,42,61,.86); word-break: break-word; }
 
         .footnote{
             margin-top: 12px;
@@ -566,7 +655,7 @@
             line-height: 1.45;
         }
 
-        /* Modal */
+        /* Modals */
         .modal{
             position: fixed;
             inset: 0;
@@ -580,7 +669,7 @@
         }
         .modal.open{ display:flex; }
         .modal-card{
-            width: min(820px, 100%);
+            width: min(920px, 100%);
             border-radius: 24px;
             border: 1px solid rgba(255,255,255,.18);
             background: rgba(255,255,255,.92);
@@ -589,9 +678,7 @@
             transform: translateY(6px);
             animation: pop .22s ease forwards;
         }
-        @keyframes pop{
-            to{ transform: translateY(0); }
-        }
+        @keyframes pop{ to{ transform: translateY(0); } }
         .modal-head{
             padding: 14px 16px;
             display:flex;
@@ -601,26 +688,15 @@
             border-bottom: 1px solid rgba(15,42,61,.10);
             background: linear-gradient(145deg, rgba(43,116,182,.10), rgba(202,162,75,.10));
         }
-        .modal-head h3{
-            margin:0;
-            font-size: 15px;
-            letter-spacing:.1px;
-        }
+        .modal-head h3{ margin:0; font-size: 15px; }
         .modal-body{
             padding: 16px;
             display:grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
-        .field{
-            display:flex;
-            flex-direction:column;
-            gap: 6px;
-        }
-        .field label{
-            font-size: 12px;
-            color: rgba(15,42,61,.75);
-        }
+        .field{ display:flex; flex-direction:column; gap: 6px; }
+        .field label{ font-size: 12px; color: rgba(15,42,61,.75); }
         .field input, .field textarea{
             border: 1px solid rgba(15,42,61,.14);
             background: rgba(255,255,255,.95);
@@ -635,10 +711,7 @@
             border-color: rgba(43,116,182,.28);
             box-shadow: 0 0 0 4px rgba(43,116,182,.10);
         }
-        .field textarea{
-            min-height: 110px;
-            resize: vertical;
-        }
+        .field textarea{ min-height: 110px; resize: vertical; grid-column: 1 / -1; }
         .modal-foot{
             padding: 14px 16px;
             border-top: 1px solid rgba(15,42,61,.10);
@@ -653,6 +726,20 @@
             color: rgba(15,42,61,.62);
             font-size: 12px;
             line-height: 1.45;
+        }
+
+        /* PDF preview modal body */
+        .pdf-wrap{
+            padding: 0;
+            height: min(78vh, 720px);
+            background: rgba(255,255,255,.95);
+        }
+        .pdf-frame{
+            width:100%;
+            height: min(78vh, 720px);
+            border:0;
+            display:block;
+            background: white;
         }
 
         /* Floating */
@@ -676,6 +763,7 @@
             .hero-grid{ grid-template-columns: 1fr; }
             .grid-3{ grid-template-columns: 1fr; }
             .work-grid{ grid-template-columns: 1fr; }
+            .pres-grid{ grid-template-columns: 1fr; }
             .contact{ grid-template-columns: 1fr; }
             .brand{ min-width: auto; }
             nav ul{ display:none; }
@@ -703,34 +791,43 @@
                 </div>
                 <div>
                     <h1>STEAM × Desmos</h1>
-                    <small>Математика как исследование и творчество</small>
+                    <small data-i18n="brand_sub">Математика как исследование и творчество</small>
                 </div>
             </div>
 
             <nav aria-label="Основная навигация">
                 <ul>
-                    <li><a href="#info">Информация</a></li>
-                    <li><a href="#materials">Видеоматериалы</a></li>
-                    <li><a href="#works">Галерея Desmos</a></li>
-                    <li><a href="#contact">Контакты</a></li>
+<!--                    <li><a href="#info" data-i18n="nav_info">Информация</a></li>-->
+                    <li><a href="#materials" data-i18n="nav_videos">Видеоматериалы</a></li>
+                    <li><a href="#works" data-i18n="nav_works">Галерея</a></li>
+                    <li><a href="#presentations" data-i18n="nav_presentations">Презентации</a></li>
+                    <li><a href="#contact" data-i18n="nav_contacts">Контакты</a></li>
                 </ul>
             </nav>
 
             <div class="nav-actions">
+                <select class="lang" id="langSelect" aria-label="Language">
+                    <option value="kz">KZ</option>
+                    <option value="ru">RU</option>
+                    <option value="en">EN</option>
+                </select>
+
                 <button class="btn burger" id="burger" aria-label="Открыть меню" type="button">
-                    <span>Меню</span>
+                    <span data-i18n="menu">Меню</span>
                 </button>
+
                 <button class="btn primary" id="openSubmitTop" type="button">
-                    <span>Отправить работу</span>
+                    <span data-i18n="btn_submit">Отправить работу</span>
                 </button>
             </div>
         </div>
 
         <div class="mobile" id="mobileNav" aria-label="Мобильная навигация">
-            <a href="#info">Информация</a>
-            <a href="#materials">Видеоматериалы</a>
-            <a href="#works">Галерея Desmos</a>
-            <a href="#contact">Контакты</a>
+            <a href="#info" data-i18n="nav_info">Информация</a>
+            <a href="#materials" data-i18n="nav_videos">Видеоматериалы</a>
+            <a href="#works" data-i18n="nav_works">Галерея Desmos</a>
+            <a href="#presentations" data-i18n="nav_presentations">Презентации</a>
+            <a href="#contact" data-i18n="nav_contacts">Контакты</a>
         </div>
     </div>
 </header>
@@ -741,45 +838,45 @@
         <div class="container">
             <div class="hero-grid">
                 <div class="card hover hero-left reveal">
-                    <div class="kicker"><span class="dot"></span> STEAM-подход и Desmos для 7–12 классов</div>
-                    <h2>Математика становится понятной, когда её можно увидеть и исследовать</h2>
-                    <p>
+                    <div class="kicker"><span class="dot"></span> <span data-i18n="hero_kicker">STEAM-подход и Desmos для 7–12 классов</span></div>
+                    <h2 data-i18n="hero_title">Математика становится понятной, когда её можно увидеть и исследовать</h2>
+                    <p data-i18n="hero_text">
                         Визуальные эксперименты в Desmos переводят формулы в смысл: ученик управляет параметрами,
                         наблюдает закономерности и превращает результаты в аккуратные графические проекты.
                     </p>
 
-                    <div class="hero-tags stagger" aria-label="Ключевые акценты">
-                        <div class="tag" style="--d:60ms"><strong>Визуализация</strong> вместо заучивания</div>
-                        <div class="tag" style="--d:120ms"><strong>Исследование</strong> через параметры</div>
-                        <div class="tag" style="--d:180ms"><strong>Творчество</strong> как индикатор понимания</div>
-                        <div class="tag" style="--d:240ms"><strong>Проектность</strong> и защита результата</div>
+                    <div class="hero-tags" aria-label="Ключевые акценты">
+                        <div class="tag"><strong data-i18n="tag1_b">Визуализация</strong> <span data-i18n="tag1_t">вместо заучивания</span></div>
+                        <div class="tag"><strong data-i18n="tag2_b">Исследование</strong> <span data-i18n="tag2_t">через параметры</span></div>
+                        <div class="tag"><strong data-i18n="tag3_b">Творчество</strong> <span data-i18n="tag3_t">как индикатор понимания</span></div>
+                        <div class="tag"><strong data-i18n="tag4_b">Проектность</strong> <span data-i18n="tag4_t">и защита результата</span></div>
                     </div>
 
                     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;">
-                        <a class="btn" href="#materials">Перейти к видео</a>
-                        <a class="btn ghost" href="#works">Открыть галерею</a>
+                        <a class="btn" href="#materials" data-i18n="btn_to_videos">Перейти к видео</a>
+                        <a class="btn ghost" href="#works" data-i18n="btn_to_gallery">Открыть галерею</a>
                     </div>
                 </div>
 
                 <div class="card hover hero-right reveal">
-                    <!-- Work image in first block -->
-                    <div class="hero-media reveal" style="transition-delay:80ms">
+                    <div class="hero-media reveal">
                         <div class="shine" aria-hidden="true"></div>
                         <img src="assets/work.jpg" alt="Desmos-art: пример работы" loading="lazy">
-                        <div class="badge">Desmos-art: пример работы</div>
+                        <div class="vignette" aria-hidden="true"></div>
+                        <div class="badge"><b>Desmos</b> · <span data-i18n="badge_work">пример работы</span></div>
                     </div>
 
-                    <div class="mini reveal" style="transition-delay:120ms">
-                        <h3>Что происходит на уроке</h3>
-                        <p><strong>Один параметр → новый смысл</strong>: ученик меняет k и b, видит эффект и объясняет вывод.</p>
+                    <div class="mini reveal">
+                        <h3 data-i18n="mini1_t">Что происходит на уроке</h3>
+                        <p data-i18n="mini1_p"><strong>Один параметр → новый смысл</strong>: ученик меняет k и b, видит эффект и объясняет вывод.</p>
                     </div>
-                    <div class="mini reveal" style="transition-delay:160ms">
-                        <h3>Что получается на выходе</h3>
-                        <p>Графические проекты на основе функций: симметрия, преобразования, композиция, сюжет.</p>
+                    <div class="mini reveal">
+                        <h3 data-i18n="mini2_t">Что получается на выходе</h3>
+                        <p data-i18n="mini2_p">Графические проекты на основе функций: симметрия, преобразования, композиция, сюжет.</p>
                     </div>
-                    <div class="mini reveal" style="transition-delay:200ms">
-                        <h3>Что это развивает</h3>
-                        <p>Критическое мышление, творческое конструирование, уверенность в решениях, аргументацию.</p>
+                    <div class="mini reveal">
+                        <h3 data-i18n="mini3_t">Что это развивает</h3>
+                        <p data-i18n="mini3_p">Критическое мышление, творческое конструирование, уверенность в решениях, аргументацию.</p>
                     </div>
                 </div>
             </div>
@@ -791,8 +888,8 @@
         <div class="container">
             <div class="section-head reveal">
                 <div>
-                    <h2>Видеоматериалы для изучения Desmos</h2>
-                    <p>Подборка роликов: старт, создание графиков, оформление и цветовые настройки.</p>
+                    <h2 data-i18n="videos_title">Видеоматериалы для изучения Desmos</h2>
+                    <p data-i18n="videos_desc">Подборка роликов: старт, создание графиков, оформление и цветовые настройки.</p>
                 </div>
             </div>
 
@@ -805,44 +902,44 @@
         <div class="container">
             <div class="section-head reveal">
                 <div>
-                    <h2>Галерея работ учеников (Desmos)</h2>
-                    <p>Поиск и фильтры по ученику, классу и группе. Работы оптимизированы: графики подгружаются при прокрутке.</p>
+                    <h2 data-i18n="works_title">Галерея работ учеников (Desmos)</h2>
+                    <p data-i18n="works_desc">Поиск и фильтры по ученику, классу и группе. Графики подгружаются при прокрутке.</p>
                 </div>
             </div>
 
             <div class="card hover gallery reveal">
                 <div class="toolbar">
                     <div class="filters">
-                        <div class="input" title="Поиск по ученику, классу или номеру">
+                        <div class="input" title="Search">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                                 <path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z" stroke="rgba(15,42,61,.70)" stroke-width="1.8"/>
                                 <path d="M16.5 16.5 21 21" stroke="rgba(15,42,61,.70)" stroke-width="1.8" stroke-linecap="round"/>
                             </svg>
-                            <input id="q" type="search" placeholder="Поиск: Еркежан, 9Н-2, №5…" />
+                            <input id="q" type="search" data-i18n-placeholder="search_ph" placeholder="Поиск: Еркежан, 9Н-2, №5…" />
                         </div>
 
-                        <select id="grade">
-                            <option value="">Все классы</option>
-                            <option value="8">8 класс</option>
-                            <option value="9">9 класс</option>
-                            <option value="10">10 класс</option>
-                            <option value="11">11 класс</option>
-                            <option value="12">12 класс</option>
+                        <select class="ui" id="grade">
+                            <option value="" data-i18n="grade_all">Все классы</option>
+                            <option value="8" data-i18n="grade_8">8 класс</option>
+                            <option value="9" data-i18n="grade_9">9 класс</option>
+                            <option value="10" data-i18n="grade_10">10 класс</option>
+                            <option value="11" data-i18n="grade_11">11 класс</option>
+                            <option value="12" data-i18n="grade_12">12 класс</option>
                         </select>
 
-                        <select id="group">
-                            <option value="">Все группы</option>
-                            <option value="1">Группа 1</option>
-                            <option value="2">Группа 2</option>
-                            <option value="3">Группа 3</option>
+                        <select class="ui" id="group">
+                            <option value="" data-i18n="group_all">Все группы</option>
+                            <option value="1" data-i18n="group_1">Группа 1</option>
+                            <option value="2" data-i18n="group_2">Группа 2</option>
+                            <option value="3" data-i18n="group_3">Группа 3</option>
                         </select>
                     </div>
 
                     <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
-                        <button class="btn" id="reset" type="button">Сброс</button>
-                        <button class="btn primary" id="openSubmit" type="button">Отправить работу</button>
+                        <button class="btn" id="reset" type="button" data-i18n="reset">Сброс</button>
+                        <button class="btn primary" id="openSubmit" type="button" data-i18n="btn_submit">Отправить работу</button>
                         <div style="color:var(--muted); font-size:12px;">
-                            Показано: <b id="count">0</b>
+                            <span data-i18n="shown">Показано:</span> <b id="count">0</b>
                         </div>
                     </div>
                 </div>
@@ -851,24 +948,38 @@
             </div>
         </div>
     </section>
+
+    <!-- 4) PRESENTATIONS -->
+    <section id="presentations">
+        <div class="container">
+            <div class="section-head reveal">
+                <div>
+                    <h2 data-i18n="pres_title">Презентации учеников</h2>
+                    <p data-i18n="pres_desc">Презентации с защитой проектов. Можно открыть в новом окне или посмотреть внутри сайта.</p>
+                </div>
+            </div>
+
+            <div class="pres-grid" id="presGrid"></div>
+        </div>
+    </section>
 </main>
 
-<!-- 4) CONTACTS -->
+<!-- 5) CONTACTS -->
 <footer id="contact">
     <div class="container">
         <div class="section-head reveal">
             <div>
-                <h2>Контакты</h2>
-                <p>Нажмите на строку, чтобы скопировать.</p>
+                <h2 data-i18n="contacts_title">Контакты</h2>
+                <p data-i18n="contacts_desc">Нажмите на строку, чтобы скопировать.</p>
             </div>
         </div>
 
         <div class="contact">
             <div class="left reveal">
-                <h3>О проекте</h3>
-                <p>
+                <h3 data-i18n="about_title">О проекте</h3>
+                <p data-i18n="about_text">
                     STEAM и Desmos: развитие исследовательских и творческих навыков учащихся через визуализацию,
-                    параметризацию и проектную работу. Галерея показывает реальные ученические проекты.
+                    параметризацию и проектную работу.
                 </p>
                 <div class="footnote">© STEAM × Desmos</div>
             </div>
@@ -876,11 +987,11 @@
             <div class="right reveal">
                 <div class="author">
                     <div class="avatar" aria-hidden="true">
-                        <img src="assets/author.svg" alt="Фото автора" loading="lazy">
+                        <img src="assets/author.svg" alt="Автор" loading="lazy">
                     </div>
                     <div>
                         <div class="author-name">Раисова Бакытгуль Токтасыновна</div>
-                        <div class="author-sub">Назарбаев Интеллектуальная школа ФМН, г. Усть-Каменогорск</div>
+                        <div class="author-sub" data-i18n="author_sub">Назарбаев Интеллектуальная школа ЕМН, г. Усть-Каменогорск</div>
                     </div>
                 </div>
 
@@ -901,60 +1012,76 @@
                         <span>+7 777 293 6105</span>
                     </div>
 
-                    <button class="btn primary" id="openSubmitContact" type="button" style="width:100%; justify-content:center;">
+                    <button class="btn primary" id="openSubmitContact" type="button" style="width:100%; justify-content:center;" data-i18n="btn_submit">
                         Отправить работу
                     </button>
                 </div>
 
-                <div class="footnote">Текст для отправки сформируется автоматически (WhatsApp или Email).</div>
+                <div class="footnote" data-i18n="contacts_hint">Текст для отправки сформируется автоматически (WhatsApp или Email).</div>
             </div>
         </div>
     </div>
 </footer>
 
-<a class="btn to-top" id="toTop" href="#top" aria-label="Наверх">Наверх</a>
+<a class="btn to-top" id="toTop" href="#top" aria-label="To top" data-i18n="to_top">Наверх</a>
 
 <!-- Submit modal -->
 <div class="modal" id="submitModal" role="dialog" aria-modal="true" aria-labelledby="submitTitle">
     <div class="modal-card">
         <div class="modal-head">
-            <h3 id="submitTitle">Отправить работу (Desmos)</h3>
-            <button class="btn" id="closeModal" type="button">Закрыть</button>
+            <h3 id="submitTitle" data-i18n="submit_title">Отправить работу (Desmos)</h3>
+            <button class="btn" id="closeModal" type="button" data-i18n="close">Закрыть</button>
         </div>
 
         <div class="modal-body">
             <div class="field">
-                <label for="sName">Имя и фамилия ученика</label>
-                <input id="sName" type="text" placeholder="Например: Зекенова Еркежан" />
+                <label for="sName" data-i18n="f_name">Имя и фамилия ученика</label>
+                <input id="sName" type="text" data-i18n-placeholder="f_name_ph" placeholder="Например: Зекенова Еркежан" />
             </div>
 
             <div class="field">
-                <label for="sClass">Класс</label>
-                <input id="sClass" type="text" placeholder="Например: 9Н" />
+                <label for="sClass" data-i18n="f_class">Класс</label>
+                <input id="sClass" type="text" data-i18n-placeholder="f_class_ph" placeholder="Например: 9Н" />
             </div>
 
             <div class="field">
-                <label for="sGroup">Группа (если есть)</label>
-                <input id="sGroup" type="text" placeholder="Например: 2" />
+                <label for="sGroup" data-i18n="f_group">Группа (если есть)</label>
+                <input id="sGroup" type="text" data-i18n-placeholder="f_group_ph" placeholder="Например: 2" />
             </div>
 
             <div class="field">
-                <label for="sLink">Ссылка Desmos</label>
-                <input id="sLink" type="url" placeholder="https://www.desmos.com/calculator/..." />
+                <label for="sLink" data-i18n="f_link">Ссылка Desmos</label>
+                <input id="sLink" type="url" data-i18n-placeholder="f_link_ph" placeholder="https://www.desmos.com/calculator/..." />
             </div>
 
-            <div class="field" style="grid-column: 1 / -1;">
-                <label for="sDesc">Краткое описание (по желанию)</label>
-                <textarea id="sDesc" placeholder="Коротко: какие функции использованы, симметрия, идея работы и т.д."></textarea>
+            <div class="field">
+                <label for="sDesc" data-i18n="f_desc">Краткое описание (по желанию)</label>
+                <textarea id="sDesc" data-i18n-placeholder="f_desc_ph" placeholder="Коротко: функции, симметрия, идея работы"></textarea>
             </div>
         </div>
 
         <div class="hint" id="submitHint"></div>
 
         <div class="modal-foot">
-            <button class="btn" id="copyText" type="button">Скопировать текст</button>
+            <button class="btn" id="copyText" type="button" data-i18n="copy_text">Скопировать текст</button>
             <button class="btn" id="sendEmail" type="button">Email</button>
             <button class="btn primary" id="sendWhatsApp" type="button">WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<!-- PDF preview modal -->
+<div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3 id="pdfTitle">PDF</h3>
+            <button class="btn" id="closePdf" type="button" data-i18n="close">Закрыть</button>
+        </div>
+        <div class="pdf-wrap">
+            <iframe class="pdf-frame" id="pdfFrame" src="about:blank" title="PDF"></iframe>
+        </div>
+        <div class="modal-foot">
+            <a class="btn" id="openPdfNew" href="#" target="_blank" rel="noopener" data-i18n="open_new">Открыть в новом окне</a>
         </div>
     </div>
 </div>
@@ -962,11 +1089,253 @@
 <!-- Fallback JSON -->
 <script id="studentsData" type="application/json">[]</script>
 <script id="videosData" type="application/json">[]</script>
+<script id="presentationsData" type="application/json">[]</script>
 
 <script>
     const CONFIG = {
         whatsappPhone: "77772936105",
         email: "raissova_b@ukk.nis.edu.kz"
+    };
+
+    const I18N = {
+        ru: {
+            brand_sub: "Математика как исследование и творчество",
+            menu: "Меню",
+            nav_info: "Информация",
+            nav_videos: "Видеоматериалы",
+            nav_works: "Галерея Desmos",
+            nav_presentations: "Презентации",
+            nav_contacts: "Контакты",
+            btn_submit: "Отправить работу",
+
+            hero_kicker: "STEAM-подход и Desmos для 7–12 классов",
+            hero_title: "Математика становится понятной, когда её можно увидеть и исследовать",
+            hero_text: "Визуальные эксперименты в Desmos переводят формулы в смысл: ученик управляет параметрами, наблюдает закономерности и превращает результаты в аккуратные графические проекты.",
+            tag1_b: "Визуализация", tag1_t: "вместо заучивания",
+            tag2_b: "Исследование", tag2_t: "через параметры",
+            tag3_b: "Творчество", tag3_t: "как индикатор понимания",
+            tag4_b: "Проектность", tag4_t: "и защита результата",
+            btn_to_videos: "Перейти к видео",
+            btn_to_gallery: "Открыть галерею",
+            badge_work: "пример работы",
+
+            mini1_t: "Что происходит на уроке",
+            mini1_p: "Один параметр → новый смысл: ученик меняет k и b, видит эффект и объясняет вывод.",
+            mini2_t: "Что получается на выходе",
+            mini2_p: "Графические проекты на основе функций: симметрия, преобразования, композиция, сюжет.",
+            mini3_t: "Что это развивает",
+            mini3_p: "Критическое мышление, творческое конструирование, уверенность в решениях, аргументацию.",
+
+            videos_title: "Видеоматериалы для изучения Desmos",
+            videos_desc: "Подборка роликов: старт, создание графиков, оформление и цветовые настройки.",
+
+            works_title: "Галерея работ учеников (Desmos)",
+            works_desc: "Поиск и фильтры по ученику, классу и группе. Графики подгружаются при прокрутке.",
+            search_ph: "Поиск: Еркежан, 9Н-2, №5…",
+            grade_all: "Все классы",
+            grade_8: "8 класс", grade_9: "9 класс", grade_10: "10 класс", grade_11: "11 класс", grade_12: "12 класс",
+            group_all: "Все группы",
+            group_1: "Группа 1", group_2: "Группа 2", group_3: "Группа 3",
+            reset: "Сброс",
+            shown: "Показано:",
+
+            pres_title: "Презентации учеников",
+            pres_desc: "Презентации с защитой проектов. Можно открыть в новом окне или посмотреть внутри сайта.",
+            view: "Смотреть",
+            open: "Открыть",
+            open_new: "Открыть в новом окне",
+
+            contacts_title: "Контакты",
+            contacts_desc: "Нажмите на строку, чтобы скопировать.",
+            about_title: "О проекте",
+            about_text: "STEAM и Desmos: развитие исследовательских и творческих навыков учащихся через визуализацию, параметризацию и проектную работу.",
+            author_sub: "Назарбаев Интеллектуальная школа ЕМН, г. Усть-Каменогорск",
+            contacts_hint: "Текст для отправки сформируется автоматически (WhatsApp или Email).",
+
+            submit_title: "Отправить работу (Desmos)",
+            close: "Закрыть",
+            f_name: "Имя и фамилия ученика",
+            f_name_ph: "Например: Зекенова Еркежан",
+            f_class: "Класс",
+            f_class_ph: "Например: 9Н",
+            f_group: "Группа (если есть)",
+            f_group_ph: "Например: 2",
+            f_link: "Ссылка Desmos",
+            f_link_ph: "https://www.desmos.com/calculator/...",
+            f_desc: "Краткое описание (по желанию)",
+            f_desc_ph: "Коротко: функции, симметрия, идея работы",
+            copy_text: "Скопировать текст",
+            to_top: "Наверх",
+            ph_title: "График Desmos",
+            ph_sub: "Загрузится автоматически при прокрутке или по кнопке.",
+            ph_btn: "Загрузить",
+            toast_copied: "Скопировано.",
+            hint_need: "Заполните минимум: имя ученика и ссылка Desmos.",
+            hint_ok: "Готово: можно отправлять через WhatsApp или Email.",
+            need_fields: "Заполните имя и ссылку."
+        },
+        kz: {
+            brand_sub: "Математика — зерттеу және шығармашылық",
+            menu: "Мәзір",
+            nav_info: "Ақпарат",
+            nav_videos: "Оқу видеолары",
+            nav_works: "Desmos галереясы",
+            nav_presentations: "Презентациялар",
+            nav_contacts: "Байланыс",
+            btn_submit: "Жұмысты жіберу",
+
+            hero_kicker: "7–12 сыныптарға арналған STEAM және Desmos",
+            hero_title: "Математиканы көріп, зерттеген кезде түсінікті болады",
+            hero_text: "Desmos-тағы визуалды тәжірибелер формуланы мағынаға айналдырады: оқушы параметрлерді өзгертіп, заңдылықтарды байқайды және нәтижені графикалық жобаға айналдырады.",
+            tag1_b: "Көрнекілеу", tag1_t: "жаттаудың орнына",
+            tag2_b: "Зерттеу", tag2_t: "параметр арқылы",
+            tag3_b: "Шығармашылық", tag3_t: "түсінудің көрсеткіші",
+            tag4_b: "Жобалау", tag4_t: "және қорғау",
+            btn_to_videos: "Видеоларға өту",
+            btn_to_gallery: "Галереяны ашу",
+            badge_work: "жұмыс үлгісі",
+
+            mini1_t: "Сабақта не болады",
+            mini1_p: "Бір параметр → жаңа түсінік: оқушы k және b мәндерін өзгертіп, әсерін көріп, қорытынды жасайды.",
+            mini2_t: "Нәтижесінде не шығады",
+            mini2_p: "Функциялар негізіндегі графикалық жобалар: симметрия, түрлендіру, композиция, сюжет.",
+            mini3_t: "Не дамиды",
+            mini3_p: "Сыни ойлау, шығармашылық құрастыру, шешімге сенімділік, дәлелдеу.",
+
+            videos_title: "Desmos-ты үйренуге арналған видеолар",
+            videos_desc: "Таңдалған роликтер: бастау, график салу, дизайн және түстерді баптау.",
+
+            works_title: "Оқушылар жұмыстары (Desmos)",
+            works_desc: "Оқушы, сынып және топ бойынша іздеу/сүзгі. Графиктер прокрутка кезінде жүктеледі.",
+            search_ph: "Іздеу: Еркежан, 9Н-2, №5…",
+            grade_all: "Барлық сыныптар",
+            grade_8: "8 сынып", grade_9: "9 сынып", grade_10: "10 сынып", grade_11: "11 сынып", grade_12: "12 сынып",
+            group_all: "Барлық топтар",
+            group_1: "1-топ", group_2: "2-топ", group_3: "3-топ",
+            reset: "Тазалау",
+            shown: "Көрсетілді:",
+
+            pres_title: "Оқушылар презентациялары",
+            pres_desc: "Жобаларды қорғау бойынша презентациялары. Жаңа терезеде ашуға немесе сайт ішінде көруге болады.",
+            view: "Көру",
+            open: "Ашу",
+            open_new: "Жаңа терезеде ашу",
+
+            contacts_title: "Байланыс",
+            contacts_desc: "Көшіру үшін жолды басыңыз.",
+            about_title: "Жоба туралы",
+            about_text: "STEAM және Desmos: көрнекілеу, параметрлеу және жобалық жұмыс арқылы оқушылардың зерттеушілік және шығармашылық дағдыларын дамыту.",
+            author_sub: "НЗМ ЕМН, Өскемен қаласы",
+            contacts_hint: "Жіберуге арналған мәтін автоматты түрде құралады (WhatsApp немесе Email).",
+
+            submit_title: "Жұмысты жіберу (Desmos)",
+            close: "Жабу",
+            f_name: "Оқушының аты-жөні",
+            f_name_ph: "Мысалы: Зекенова Еркежан",
+            f_class: "Сынып",
+            f_class_ph: "Мысалы: 9Н",
+            f_group: "Топ (болса)",
+            f_group_ph: "Мысалы: 2",
+            f_link: "Desmos сілтемесі",
+            f_link_ph: "https://www.desmos.com/calculator/...",
+            f_desc: "Қысқаша сипаттама (қалау бойынша)",
+            f_desc_ph: "Қысқаша: функциялар, симметрия, идея",
+            copy_text: "Мәтінді көшіру",
+            to_top: "Жоғары",
+            ph_title: "Desmos графигі",
+            ph_sub: "Прокрутка кезінде немесе батырмамен жүктеледі.",
+            ph_btn: "Жүктеу",
+            toast_copied: "Көшірілді.",
+            hint_need: "Минимум толтырыңыз: аты-жөні және Desmos сілтемесі.",
+            hint_ok: "Дайын: WhatsApp немесе Email арқылы жіберуге болады.",
+            need_fields: "Аты-жөні және сілтемені толтырыңыз."
+        },
+        en: {
+            brand_sub: "Math as exploration and creativity",
+            menu: "Menu",
+            nav_info: "Overview",
+            nav_videos: "Learning videos",
+            nav_works: "Desmos gallery",
+            nav_presentations: "Presentations",
+            nav_contacts: "Contacts",
+            btn_submit: "Submit work",
+
+            hero_kicker: "STEAM + Desmos for grades 7–12",
+            hero_title: "Math becomes clear when you can see and explore it",
+            hero_text: "Visual experiments in Desmos turn formulas into meaning: students tune parameters, observe patterns, and transform results into polished graph-based projects.",
+            tag1_b: "Visualization", tag1_t: "instead of memorizing",
+            tag2_b: "Exploration", tag2_t: "through parameters",
+            tag3_b: "Creativity", tag3_t: "as understanding proof",
+            tag4_b: "Projects", tag4_t: "and defense",
+            btn_to_videos: "Go to videos",
+            btn_to_gallery: "Open gallery",
+            badge_work: "sample work",
+
+            mini1_t: "What happens in class",
+            mini1_p: "One parameter → new insight: students change k and b, see the effect, and explain the result.",
+            mini2_t: "What students produce",
+            mini2_p: "Graph-based projects from functions: symmetry, transformations, composition, storytelling.",
+            mini3_t: "What it develops",
+            mini3_p: "Critical thinking, creative construction, confidence in solutions, argumentation.",
+
+            videos_title: "Learning videos for Desmos",
+            videos_desc: "A curated set: intro, graph building, design and color settings.",
+
+            works_title: "Student gallery (Desmos)",
+            works_desc: "Search and filters by student, grade and group. Graphs load as you scroll.",
+            search_ph: "Search: Erkzhan, 9N-2, #5…",
+            grade_all: "All grades",
+            grade_8: "Grade 8", grade_9: "Grade 9", grade_10: "Grade 10", grade_11: "Grade 11", grade_12: "Grade 12",
+            group_all: "All groups",
+            group_1: "Group 1", group_2: "Group 2", group_3: "Group 3",
+            reset: "Reset",
+            shown: "Shown:",
+
+            pres_title: "Student presentations",
+            pres_desc: "Presentations of project defenses. Open in a new tab or preview on the site.",
+            view: "Preview",
+            open: "Open",
+            open_new: "Open in new tab",
+
+            contacts_title: "Contacts",
+            contacts_desc: "Click a line to copy.",
+            about_title: "About",
+            about_text: "STEAM and Desmos: developing research and creative skills through visualization, parameter tuning, and project work.",
+            author_sub: "NIS NM, Ust-Kamenogorsk",
+            contacts_hint: "A ready-to-send message will be generated automatically (WhatsApp or Email).",
+
+            submit_title: "Submit work (Desmos)",
+            close: "Close",
+            f_name: "Student full name",
+            f_name_ph: "e.g., Zekenova Erkezhan",
+            f_class: "Class",
+            f_class_ph: "e.g., 9N",
+            f_group: "Group (optional)",
+            f_group_ph: "e.g., 2",
+            f_link: "Desmos link",
+            f_link_ph: "https://www.desmos.com/calculator/...",
+            f_desc: "Short description (optional)",
+            f_desc_ph: "Briefly: functions, symmetry, idea",
+            copy_text: "Copy text",
+            to_top: "Top",
+            ph_title: "Desmos graph",
+            ph_sub: "Loads automatically on scroll or by button.",
+            ph_btn: "Load",
+            toast_copied: "Copied.",
+            hint_need: "Fill at least: student name and Desmos link.",
+            hint_ok: "Ready: you can send via WhatsApp or Email.",
+            need_fields: "Please fill in name and link."
+        }
+    };
+
+    let LANG = "ru";
+
+    const t = (key) => (I18N[LANG] && I18N[LANG][key]) || (I18N.ru[key] || key);
+    const tObj = (val) => {
+        if (val == null) return "";
+        if (typeof val === "string") return val;
+        if (typeof val === "object") return val[LANG] || val.ru || val.en || val.kz || "";
+        return String(val);
     };
 
     const el = (tag, attrs={}, children=[]) => {
@@ -983,27 +1352,27 @@
     const toast = (() => {
         let timer;
         return (msg) => {
-            let t = document.getElementById("toast");
-            if (!t){
-                t = document.createElement("div");
-                t.id = "toast";
-                t.style.position = "fixed";
-                t.style.left = "16px";
-                t.style.bottom = "16px";
-                t.style.padding = "10px 12px";
-                t.style.borderRadius = "14px";
-                t.style.border = "1px solid rgba(15,42,61,.14)";
-                t.style.background = "rgba(255,255,255,.92)";
-                t.style.boxShadow = "0 12px 34px rgba(15,42,61,.12)";
-                t.style.color = "rgba(15,42,61,.86)";
-                t.style.fontSize = "13px";
-                t.style.zIndex = "2000";
-                document.body.appendChild(t);
+            let tEl = document.getElementById("toast");
+            if (!tEl){
+                tEl = document.createElement("div");
+                tEl.id = "toast";
+                tEl.style.position = "fixed";
+                tEl.style.left = "16px";
+                tEl.style.bottom = "16px";
+                tEl.style.padding = "10px 12px";
+                tEl.style.borderRadius = "14px";
+                tEl.style.border = "1px solid rgba(15,42,61,.14)";
+                tEl.style.background = "rgba(255,255,255,.92)";
+                tEl.style.boxShadow = "0 12px 34px rgba(15,42,61,.12)";
+                tEl.style.color = "rgba(15,42,61,.86)";
+                tEl.style.fontSize = "13px";
+                tEl.style.zIndex = "2000";
+                document.body.appendChild(tEl);
             }
-            t.textContent = msg;
-            t.style.opacity = "1";
+            tEl.textContent = msg;
+            tEl.style.opacity = "1";
             clearTimeout(timer);
-            timer = setTimeout(() => { t.style.opacity = "0"; }, 1600);
+            timer = setTimeout(() => { tEl.style.opacity = "0"; }, 1400);
         };
     })();
 
@@ -1058,7 +1427,7 @@
     async function copyText(text){
         try{
             await navigator.clipboard.writeText(text);
-            toast("Скопировано.");
+            toast(t("toast_copied"));
         }catch(e){
             const ta = document.createElement("textarea");
             ta.value = text;
@@ -1066,7 +1435,7 @@
             ta.select();
             document.execCommand("copy");
             ta.remove();
-            toast("Скопировано.");
+            toast(t("toast_copied"));
         }
     }
 
@@ -1082,7 +1451,6 @@
         });
     }
 
-    /* Reveal on scroll */
     function setupReveal(){
         const items = Array.from(document.querySelectorAll(".reveal"));
         const io = new IntersectionObserver((entries) => {
@@ -1092,20 +1460,39 @@
                     io.unobserve(e.target);
                 }
             });
-        }, { root: null, threshold: 0.12, rootMargin: "80px 0px -40px 0px" });
-
-        items.forEach((node, idx) => {
-            if (!node.style.transitionDelay && node.closest(".stagger") == null){
-                node.style.transitionDelay = Math.min(idx * 30, 180) + "ms";
-            }
-            io.observe(node);
-        });
+        }, { threshold: 0.12, rootMargin: "80px 0px -40px 0px" });
+        items.forEach(node => io.observe(node));
     }
 
-    /* Modal */
+    /* i18n apply */
+    function applyI18n(){
+        document.querySelectorAll("[data-i18n]").forEach(n => {
+            const k = n.getAttribute("data-i18n");
+            n.textContent = t(k);
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach(n => {
+            const k = n.getAttribute("data-i18n-placeholder");
+            n.setAttribute("placeholder", t(k));
+        });
+
+        // Update placeholders in Desmos frames if present later
+        document.querySelectorAll(".ph-title").forEach(n => n.textContent = t("ph_title"));
+        document.querySelectorAll(".ph-sub").forEach(n => n.textContent = t("ph_sub"));
+        document.querySelectorAll(".ph-btn").forEach(n => n.textContent = t("ph_btn"));
+
+        // Update submit modal hint
+        updateSubmitHint();
+
+        // Re-render dynamic lists in current language
+        renderVideos(VIDEO_MATERIALS);
+        renderWorks(currentFilteredWorks());
+        renderPresentations(PRESENTATIONS);
+        setupReveal();
+    }
+
+    /* Submit modal */
     function openModal(){
-        const m = document.getElementById("submitModal");
-        m.classList.add("open");
+        document.getElementById("submitModal").classList.add("open");
         document.getElementById("sName").focus();
         updateSubmitHint();
     }
@@ -1131,63 +1518,77 @@
     }
 
     function updateSubmitHint(){
-        const name = (document.getElementById("sName").value || "").trim();
-        const link = (document.getElementById("sLink").value || "").trim();
+        const name = (document.getElementById("sName")?.value || "").trim();
+        const link = (document.getElementById("sLink")?.value || "").trim();
         const ok = name && link;
-        document.getElementById("submitHint").textContent = ok
-            ? "Готово: можно отправлять через WhatsApp или Email."
-            : "Заполните минимум: имя ученика и ссылка Desmos.";
+        const hint = document.getElementById("submitHint");
+        if (hint){
+            hint.textContent = ok ? t("hint_ok") : t("hint_need");
+        }
         return ok;
     }
 
     function sendWhatsApp(){
-        if (!updateSubmitHint()) { toast("Заполните имя и ссылку."); return; }
+        if (!updateSubmitHint()) { toast(t("need_fields")); return; }
         const text = buildSubmitText();
         const url = `https://wa.me/${CONFIG.whatsappPhone}?text=${encodeURIComponent(text)}`;
         window.open(url, "_blank", "noopener");
     }
-
     function sendEmail(){
-        if (!updateSubmitHint()) { toast("Заполните имя и ссылку."); return; }
+        if (!updateSubmitHint()) { toast(t("need_fields")); return; }
         const body = buildSubmitText();
-        const subject = "Работа Desmos";
-        const url = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        window.location.href = url;
+        const subject = "Desmos work";
+        window.location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     }
 
-    async function copySubmitText(){
-        await copyText(buildSubmitText());
-    }
-
-    /* Render videos */
+    /* Videos */
     function renderVideos(list){
         const grid = document.getElementById("videoGrid");
         grid.innerHTML = "";
 
-        for (const v of list){
+        // SVG helper (правильный namespace)
+        const SVG_NS = "http://www.w3.org/2000/svg";
+        function playIconSvg() {
+            const svg = document.createElementNS(SVG_NS, "svg");
+            svg.setAttribute("width", "24");
+            svg.setAttribute("height", "24");
+            svg.setAttribute("viewBox", "0 0 24 24");
+            svg.setAttribute("fill", "none");
+
+            const path = document.createElementNS(SVG_NS, "path");
+            path.setAttribute(
+                "d",
+                "M7.2397 4.53465L19.1841 10.1925C20.7092 10.9149 20.7092 13.0851 19.1841 13.8075L7.23971 19.4653C5.82457 20.1357 4.22284 18.9933 4.39577 17.437L4.99988 12L4.39577 6.56299C4.22284 5.0067 5.82456 3.86433 7.2397 4.53465Z"
+            );
+            path.setAttribute("fill", "white");
+            // На случай, если CSS перебивает fill:
+            path.style.fill = "white";
+
+            svg.appendChild(path);
+            return svg;
+        }
+
+        list.forEach(v => {
             const id = ytId(v.url);
             const thumbUrl = ytThumb(id);
             const embed = ytEmbedUrl(id);
 
             const headLeft = el("div", {}, [
-                el("h3", { class:"video-title" }, [v.title || "Видео"]),
-                el("div", { class:"video-meta" }, [
-                    el("span", { class:"pill" }, ["YouTube"]),
-                    v.level ? el("span", { class:"pill" }, [String(v.level)]) : el("span", { class:"pill" }, ["Desmos"])
+                el("h3", {class: "video-title"}, [tObj(v.title)]),
+                el("div", {class: "video-meta"}, [
+                    el("span", {class: "pill"}, ["YouTube"]),
+                    v.level ? el("span", {class: "pill"}, [tObj(v.level)]) : el("span", {class: "pill"}, ["Desmos"])
                 ])
             ]);
 
-            const headRight = el("div", { style:"display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;" }, [
-                el("a", { class:"btn", href: v.url, target:"_blank", rel:"noopener" }, ["Открыть"]),
-                el("button", { class:"btn", "data-copy": v.url, type:"button" }, ["Копировать"])
+            const headRight = el("div", {style: "display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;"}, [
+                el("a", {class: "btn", href: v.url, target: "_blank", rel: "noopener"}, [t("open")])
             ]);
 
-            const thumb = el("div", { class:"thumb", role:"button", tabindex:"0", "aria-label":"Воспроизвести видео" }, [
-                el("div", { class:"play" }, [
-                    el("div", { class:"play-btn" }, [
-                        el("svg", { viewBox:"0 0 24 24", fill:"none" }, [
-                            el("path", { d:"M10 8l7 4-7 4V8z", fill:"rgba(255,255,255,.92)" }, [])
-                        ])
+            const thumb = el("div", {class: "thumb", role: "button", tabindex: "0"}, [
+                el("div", {class: "play"}, [
+                    el("div", {class: "play-btn"}, [
+                        playIconSvg() // <-- вот здесь вместо el("svg"...)
                     ])
                 ])
             ]);
@@ -1197,10 +1598,10 @@
             const playVideo = () => {
                 if (!embed) return;
                 thumb.replaceWith(el("iframe", {
-                    class:"yt-frame",
+                    class: "yt-frame",
                     src: embed,
-                    title: v.title || "YouTube video",
-                    loading:"lazy",
+                    title: tObj(v.title) || "YouTube video",
+                    loading: "lazy",
                     allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
                     allowfullscreen: "true"
                 }));
@@ -1208,35 +1609,37 @@
 
             thumb.addEventListener("click", playVideo);
             thumb.addEventListener("keydown", (e) => {
-                if (e.key === "Enter" || e.key === " ") { e.preventDefault(); playVideo(); }
+                if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    playVideo();
+                }
             });
 
-            const card = el("article", { class:"video-card reveal" }, [
-                el("div", { class:"video-head" }, [headLeft, headRight]),
-                el("div", { class:"video-body" }, [thumb])
+            const card = el("article", {class: "video-card reveal"}, [
+                el("div", {class: "video-head"}, [headLeft, headRight]),
+                el("div", {class: "video-body"}, [thumb])
             ]);
 
             grid.appendChild(card);
-        }
+        });
 
         hookCopyLines();
     }
 
-    /* Render works (Desmos) with lazy loading */
+
+    /* Works (Desmos) lazy */
     let desmosObserver = null;
 
-    function loadDesmosFrame(iframe, placeholder){
+    function loadDesmosFrame(iframe, placeholder) {
         if (iframe.dataset.loaded === "1") return;
         const src = iframe.getAttribute("data-src");
         if (!src) return;
         iframe.dataset.loaded = "1";
         iframe.src = src;
-        iframe.addEventListener("load", () => {
-            if (placeholder) placeholder.remove();
-        }, { once:true });
+        iframe.addEventListener("load", () => placeholder?.remove(), {once: true});
     }
 
-    function ensureDesmosObserver(){
+    function ensureDesmosObserver() {
         if (desmosObserver) return desmosObserver;
         desmosObserver = new IntersectionObserver((entries) => {
             entries.forEach(e => {
@@ -1246,7 +1649,7 @@
                 loadDesmosFrame(iframe, ph);
                 desmosObserver.unobserve(iframe);
             });
-        }, { root: null, threshold: 0.12, rootMargin: "500px 0px 500px 0px" });
+        }, { threshold: 0.12, rootMargin: "500px 0px 500px 0px" });
         return desmosObserver;
     }
 
@@ -1265,20 +1668,19 @@
             const left = el("div", {}, [
                 el("h3", {}, [`№${w.n}. ${w.name}`]),
                 el("div", { class:"meta" }, [
-                    el("span", { class:"pill" }, [`Класс: ${w.classLabel || "—"}`]),
-                    el("span", { class:"pill" }, [`Группа: ${w.group || "—"}`]),
-                    el("span", { class:"pill" }, [`Уровень: ${grade ? grade + " класс" : "—"}`]),
+                    el("span", { class:"pill" }, [`${w.classLabel || "—"}`]),
+                    el("span", { class:"pill" }, [`${w.group || "—"}`])
                 ])
             ]);
 
             const actions = el("div", { class:"work-actions" }, [
-                el("a", { class:"btn", href: w.url, target:"_blank", rel:"noopener" }, ["Открыть"]),
-                el("button", { class:"btn", "data-copy": w.url, type:"button" }, ["Копировать"])
+                el("a", { class:"btn", href: w.url, target:"_blank", rel:"noopener" }, [t("open")]),
+                // el("button", { class:"btn", "data-copy": w.url, type:"button" }, ["Copy"])
             ]);
 
             const iframe = el("iframe", {
                 class:"desmos",
-                title: `${w.name} — работа №${w.n}`,
+                title: `${w.name} — №${w.n}`,
                 loading:"lazy",
                 referrerpolicy:"no-referrer-when-downgrade",
                 allowfullscreen:"true",
@@ -1288,33 +1690,23 @@
 
             const placeholder = el("div", { class:"frame-placeholder" }, [
                 el("div", { class:"ph-inner" }, [
-                    el("div", { class:"ph-title" }, ["График Desmos"]),
-                    el("div", { class:"ph-sub" }, ["Загрузится автоматически при прокрутке или по кнопке."]),
-                    el("button", { class:"btn primary", type:"button" }, ["Загрузить"])
+                    el("div", { class:"ph-title" }, [t("ph_title")]),
+                    el("div", { class:"ph-sub" }, [t("ph_sub")]),
+                    el("button", { class:"btn primary ph-btn", type:"button" }, [t("ph_btn")])
                 ])
             ]);
-
             placeholder.querySelector("button").addEventListener("click", () => loadDesmosFrame(iframe, placeholder));
 
             const frame = el("div", { class:"frame" }, [iframe, placeholder]);
 
-            // First 1–2: load immediately (приятнее UX)
-            if (idx < 2){
-                loadDesmosFrame(iframe, placeholder);
-            }else{
-                io.observe(iframe);
-            }
+            if (idx < 2) loadDesmosFrame(iframe, placeholder);
+            else io.observe(iframe);
 
-            const work = el("article", {
-                class:"work reveal",
-                "data-grade": grade,
-                "data-group": w.group || "",
-                "data-search": `${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase()
-            }, [
+            const work = el("article", { class:"work reveal" }, [
                 el("div", { class:"work-head" }, [left, actions]),
                 el("div", { class:"work-body" }, [
-                    el("div", { style:"font-weight:650; font-size:13px;" }, [w.title || "Работа"]),
-                    el("div", { class:"desc" }, [w.desc || ""]),
+                    el("div", { style:"font-weight:650; font-size:13px;" }, [tObj(w.title || "Работа")]),
+                    // el("div", { class:"desc" }, [tObj(w.desc || "")]),
                     frame
                 ])
             ]);
@@ -1325,33 +1717,138 @@
         hookCopyLines();
     }
 
-    let STUDENT_WORKS = [];
-    let VIDEO_MATERIALS = [];
+    /* Presentations */
+    function openPdf(url, title){
+        const modal = document.getElementById("pdfModal");
+        const frame = document.getElementById("pdfFrame");
+        const ttl = document.getElementById("pdfTitle");
+        const openNew = document.getElementById("openPdfNew");
+        ttl.textContent = title || "PDF";
+        // #toolbar=0 cleaner, but optional
+        frame.src = url;
+        openNew.href = url;
+        modal.classList.add("open");
+    }
+    function closePdf(){
+        const modal = document.getElementById("pdfModal");
+        const frame = document.getElementById("pdfFrame");
+        modal.classList.remove("open");
+        frame.src = "about:blank";
+    }
 
-    function applyFilters(){
+    function renderPresentations(list){
+        const grid = document.getElementById("presGrid");
+        grid.innerHTML = "";
+
+        // SVG helper (создаёт теги в правильном namespace)
+        const SVG_NS = "http://www.w3.org/2000/svg";
+        function svgEl(tag, attrs = {}, children = []) {
+            const node = document.createElementNS(SVG_NS, tag);
+            for (const [k, v] of Object.entries(attrs)) {
+                node.setAttribute(k, String(v));
+            }
+            for (const ch of children) {
+                if (ch == null) continue;
+                node.appendChild(ch);
+            }
+            return node;
+        }
+
+        list.forEach(p => {
+            const title = tObj(p.title);
+            const name = p.name || "";
+            const cls = p.classLabel || "";
+            const url = p.url || "#";
+
+            // PDF SVG (в svg namespace)
+            const pdfSvg = svgEl("svg", { viewBox:"0 0 24 24", width:"22", height:"22", fill:"none" }, [
+                svgEl("path", { d:"M7 3h7l3 3v15H7V3z", stroke:"rgba(15,42,61,.78)", "stroke-width":"1.6" }),
+                svgEl("path", { d:"M14 3v4h4", stroke:"rgba(202,162,75,.90)", "stroke-width":"1.6" }),
+                svgEl("path", { d:"M9 14h6M9 17h6", stroke:"rgba(43,116,182,.85)", "stroke-width":"1.6", "stroke-linecap":"round" }),
+            ]);
+
+            const head = el("div", { class:"pres-top" }, [
+                el("div", { class:"pdf-icon", "aria-hidden":"true" }, [ pdfSvg ]),
+                el("div", {}, [
+                    el("h3", { class:"pres-title" }, [ title || "PDF" ]),
+                    el("div", { class:"pres-meta" }, [
+                        name ? el("span", { class:"pill" }, [name]) : el("span", { class:"pill" }, ["—"]),
+                        cls  ? el("span", { class:"pill" }, [cls])  : el("span", { class:"pill" }, ["—"]),
+                        p.date ? el("span", { class:"pill" }, [p.date]) : el("span", { class:"pill" }, ["PDF"])
+                    ])
+                ])
+            ]);
+
+            const actions = el("div", { class:"pres-actions" }, [
+                el("button", { class:"btn primary", type:"button" }, [t("view")]),
+                el("a", { class:"btn", href: url, target:"_blank", rel:"noopener" }, [t("open")])
+            ]);
+            actions.querySelector("button").addEventListener("click", () => openPdf(url, title));
+
+            const body = el("div", { class:"pres-body" }, [
+                p.desc ? el("div", { class:"desc" }, [tObj(p.desc)]) : el("div", { class:"desc" }, [""]),
+                actions
+            ]);
+
+            const card = el("article", { class:"pres-card reveal" }, [head, body]);
+            grid.appendChild(card);
+        });
+
+        setupReveal();
+    }
+
+    /* Filters */
+    function currentFilteredWorks(){
         const q = (document.getElementById("q").value || "").trim().toLowerCase();
         const grade = document.getElementById("grade").value;
         const group = document.getElementById("group").value;
 
-        const filtered = STUDENT_WORKS.filter(w => {
+        return STUDENT_WORKS.filter(w => {
             const g = parseGrade(w.classLabel);
-            const inQ = !q || (`${w.n} ${w.name} ${w.classLabel} ${w.group} ${w.title} ${w.desc}`.toLowerCase().includes(q));
+            const inQ = !q || (`${w.n} ${w.name} ${w.classLabel} ${w.group} ${tObj(w.title)} ${tObj(w.desc)}`.toLowerCase().includes(q));
             const inGrade = !grade || g === grade;
             const inGroup = !group || String(w.group || "") === String(group);
             return inQ && inGrade && inGroup;
         });
+    }
 
-        renderWorks(filtered);
-        setupReveal(); // новые карточки тоже анимируем
+    function applyFilters(){
+        renderWorks(currentFilteredWorks());
+        setupReveal();
+    }
+
+    let STUDENT_WORKS = [];
+    let VIDEO_MATERIALS = [];
+    let PRESENTATIONS = [];
+
+    function setLang(newLang){
+        LANG = newLang;
+        localStorage.setItem("lang", LANG);
+        document.documentElement.lang = LANG === "kz" ? "kk" : LANG;
+        applyI18n();
     }
 
     (async function init(){
+        // language
+        const saved = localStorage.getItem("lang");
+        LANG = saved || (navigator.language || "").toLowerCase().startsWith("kk") ? "kz" : "ru";
+        const sel = document.getElementById("langSelect");
+        sel.value = (saved && ["kz","ru","en"].includes(saved)) ? saved : "ru";
+        LANG = sel.value;
+        sel.addEventListener("change", () => setLang(sel.value));
+
+        // load data
         STUDENT_WORKS = await loadJson("students.json", "studentsData");
         VIDEO_MATERIALS = await loadJson("videos.json", "videosData");
+        PRESENTATIONS = await loadJson("presentations.json", "presentationsData");
 
+        // initial render
+        applyI18n();
         renderVideos(VIDEO_MATERIALS);
         renderWorks(STUDENT_WORKS);
+        renderPresentations(PRESENTATIONS);
 
+        // filters
         document.getElementById("q").addEventListener("input", applyFilters);
         document.getElementById("grade").addEventListener("change", applyFilters);
         document.getElementById("group").addEventListener("change", applyFilters);
@@ -1362,16 +1859,16 @@
             applyFilters();
         });
 
+        // submit modal
         document.getElementById("openSubmit").addEventListener("click", openModal);
         document.getElementById("openSubmitTop").addEventListener("click", openModal);
         document.getElementById("openSubmitContact").addEventListener("click", openModal);
-
         document.getElementById("closeModal").addEventListener("click", closeModal);
         document.getElementById("submitModal").addEventListener("click", (e) => {
             if (e.target.id === "submitModal") closeModal();
         });
         window.addEventListener("keydown", (e) => {
-            if (e.key === "Escape") closeModal();
+            if (e.key === "Escape") { closeModal(); closePdf(); }
         });
 
         ["sName","sClass","sGroup","sLink","sDesc"].forEach(id => {
@@ -1380,13 +1877,21 @@
 
         document.getElementById("sendWhatsApp").addEventListener("click", sendWhatsApp);
         document.getElementById("sendEmail").addEventListener("click", sendEmail);
-        document.getElementById("copyText").addEventListener("click", copySubmitText);
+        document.getElementById("copyText").addEventListener("click", () => copyText(buildSubmitText()));
 
+        // pdf modal
+        document.getElementById("closePdf").addEventListener("click", closePdf);
+        document.getElementById("pdfModal").addEventListener("click", (e) => {
+            if (e.target.id === "pdfModal") closePdf();
+        });
+
+        // mobile nav
         const burger = document.getElementById("burger");
         const mobileNav = document.getElementById("mobileNav");
         burger?.addEventListener("click", () => mobileNav.classList.toggle("open"));
         mobileNav?.querySelectorAll("a").forEach(a => a.addEventListener("click", () => mobileNav.classList.remove("open")));
 
+        // to top
         const toTop = document.getElementById("toTop");
         window.addEventListener("scroll", () => {
             if (window.scrollY > 600) toTop.classList.add("show");
